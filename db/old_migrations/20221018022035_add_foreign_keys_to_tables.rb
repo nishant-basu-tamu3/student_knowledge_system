@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Old Migrations
 class AddForeignKeysToTables < ActiveRecord::Migration[7.0]
   def change
     # add_foreign_key :students, :classes, column: :class_id, primary_key: :id

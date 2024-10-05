@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Static Controller class
 class StaticController < ApplicationController
   @hide_header = true
 

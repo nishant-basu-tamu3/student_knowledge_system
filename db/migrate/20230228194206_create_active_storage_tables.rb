@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Migration
 class CreateActiveStorageTables < ActiveRecord::Migration[7.0]
   def change
     create_table :active_storage_blobs, if_not_exists: true do |t|

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Student controller class
 class StudentsController < ApplicationController
   # before_action :authenticate_user!
   # before_action :authenticate_by_session
@@ -220,27 +221,27 @@ class StudentsController < ApplicationController
   def quiz
     @student = Student.find_by(id: params[:id])
     @id = current_user.email
-    @dueStudents = Student.getDue(@id)
+    @due_students = Student.getDue(@id)
 
     resp = params[:answer]
-    @correctAnswer = nil
+    @correct_answer = nil
 
     @choices = Student.where(teacher: current_user.email).where.not(id: @student.id).sample(7)
     @choices.append(@student.id)
     @choices = @choices.shuffle
 
     if resp.nil?
-      @correctAnswer = nil
+      @correct_answer = nil
     elsif resp.to_i == @student.id
-      @correctAnswer = true
-      oldInterval = @student.curr_practice_interval.to_i
-      @student.update(curr_practice_interval: (oldInterval * 2).to_s, last_practice_at: Time.now)
+      @correct_answer = true
+      old_interval = @student.curr_practice_interval.to_i
+      @student.update(curr_practice_interval: (old_interval * 2).to_s, last_practice_at: Time.now)
 
     else
-      @correctAnswer = false
-      oldInterval = @student.curr_practice_interval.to_i
-      if oldInterval > 15
-        @student.update(curr_practice_interval: (oldInterval / 2).to_s, last_practice_at: Time.now)
+      @correct_answer = false
+      old_interval = @student.curr_practice_interval.to_i
+      if old_interval > 15
+        @student.update(curr_practice_interval: (old_interval / 2).to_s, last_practice_at: Time.now)
       else
         @student.update(last_practice_at: Time.now)
       end
@@ -248,9 +249,9 @@ class StudentsController < ApplicationController
   end
 
   def getDueStudentQuiz
-    return home_path unless @dueStudents.length.positive?
+    return home_path unless @due_students.length.positive?
 
-    student = @dueStudents.sample
+    student = @due_students.sample
     quiz_students_path(student)
   end
   helper_method :getDueStudentQuiz

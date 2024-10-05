@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Session Controller class
 class SessionsController < ApplicationController
   def create
     omniauth_data = request.env['omniauth.auth']

@@ -8,9 +8,9 @@
     <div class="grid">
       <div  class="">
         <h2 class="text-[1.5rem] font-source-serif-pro mt-2">Welcome Back!</h2>
-        <p class="text-[1.15rem] font-source-serif-pro mt-2 mb-6"><b>Students due for you to practice:</b> <%= getNumDue() %></p>
-        <% if getNumDue() > 0 %>
-        <a  class="font-fira-sans px-4 py-3 bg-[#eacece] hover:bg-[#DBABAB] drop-shadow rounded-xl border-2 border-[#e5c2c2]" href= <%= getDueStudentQuiz() %> >Practice now!</a>
+        <p class="text-[1.15rem] font-source-serif-pro mt-2 mb-6"><b>Students due for you to practice:</b> <%= get_num_due() %></p>
+        <% if get_num_due() > 0 %>
+        <a  class="font-fira-sans px-4 py-3 bg-[#eacece] hover:bg-[#DBABAB] drop-shadow rounded-xl border-2 border-[#e5c2c2]" href= <%= get_due_student_quiz() %> >Practice now!</a>
         <% end %>
       </div>
 

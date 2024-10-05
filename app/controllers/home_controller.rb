@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Home Controller class
 class HomeController < ApplicationController
   before_action :require_user!
   # before_action :authenticate_user!
@@ -8,7 +9,7 @@ class HomeController < ApplicationController
   def index
     @current_user = current_user
     @id = current_user.email
-    @dueStudents = Student.getDue(@id)
+    @due_students = Student.getDue(@id)
   end
 
   def stripYear(var)
@@ -23,25 +24,25 @@ class HomeController < ApplicationController
 
   def getYears
     sems = Course.where(teacher: @id)
-    uniqSems = Set.new
+    uniq_sems = Set.new
     sems.each do |s|
       year = stripYear(s.semester)
-      uniqSems << year
+      uniq_sems << year
     end
-    uniqSems.length
+    uniq_sems.length
   end
   helper_method :getYears
 
-  def getNumDue
-    @dueStudents.length
+  def get_num_due
+    @due_students.length
   end
-  helper_method :getNumDue
+  helper_method :get_num_due
 
-  def getDueStudentQuiz
-    return home_path unless @dueStudents.length.positive?
+  def get_due_student_quiz
+    return home_path unless @due_students.length.positive?
 
-    student = @dueStudents.sample
+    student = @due_students.sample
     quiz_students_path(student)
   end
-  helper_method :getDueStudentQuiz
+  helper_method :get_due_student_quiz
 end

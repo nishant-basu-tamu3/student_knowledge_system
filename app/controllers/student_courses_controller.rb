@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Student course controller class
 class StudentCoursesController < ApplicationController
   before_action :require_user!
 

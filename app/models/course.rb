@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Course Model Class
 class Course < ApplicationRecord
   def self.search_course(search, teacher)
     if search

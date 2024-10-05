@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Upload controller class
 class UploadController < ApplicationController
   before_action :require_user!
   # before_action :authenticate_user!
@@ -24,13 +25,13 @@ class UploadController < ApplicationController
         Rails.logger.debug "\n\n#######ZIP entry: #{entry.name} ##############\n\n\n"
 
         if entry.name.include? '.htm'
-          # parse html doc for correct order of pictures, csv and images zip is mismatched but the html gets the order correct
+          # parse html doc for correct order of pictures, csv & images zip is mismatched but html gets order correct
           html_doc = Nokogiri::HTML(entry.get_input_stream.read)
           images_paths = html_doc.search('img/@src').map { |s| s.text.strip }
 
           images_paths.each do |path|
             Rails.logger.debug "\n\n\n\n################Trying to find image with path: #{path}\n\n\n\n"
-            # error handling for .display files because the path pushed to images_paths does not match the entry.name, so find_entry does not work without modyifying the path as done below
+            # error handling .display as path pushed to images_paths doesn't match entry.name,so find_entry doen't work without modyifying path
             if path.include? '.display'
               full_path = path.split('/', 2)
               # puts full_path
@@ -50,13 +51,11 @@ class UploadController < ApplicationController
           Rails.logger.info "Collected all student courses #{csv.inspect}"
           # if the csv file contains empty rows, remove the offensive row
           csv.delete_if { |row| row.to_hash.values.all?(&:nil?) }
-        else
-
         end
       end
     end
 
-    # if the number of rows in the csv file is equal to the number of images in the zip file, then proceed. Otherwise, throw an error
+    # if number of rows in csv file is equal to number of images in zip file, then proceed. Otherwise, throw an error
     if !csv.empty? && (csv.length == images.length)
       # create course entry
       @course = Course.find_or_create_by(course_name: params[:course_temp], teacher: current_user.email,
@@ -103,7 +102,7 @@ class UploadController < ApplicationController
           end
         else
           redirect_to upload_index_path,
-                      notice: 'CSV column contents are different than expected. Please check the format of your CSV file.'
+                      notice: 'CSV column contents are different than expected. Please check the format of CSV file.'
           return
         end
       end

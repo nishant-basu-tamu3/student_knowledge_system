@@ -42,12 +42,12 @@ RSpec.describe HomeController, type: :controller do
         expect(assigns(:current_user).lastname).to eq(@user.lastname)
       end
 
-      it 'assigns @dueStudents with due students' do
+      it 'assigns @due_students with due students' do
         # Add due students
         Student.create(firstname: 'Due', lastname: 'Student', uin: '123456789', email: 'due@student.com',
                        classification: 'U1', major: 'CPSC', teacher: @user.email, last_practice_at: Time.now, curr_practice_interval: 0)
         get :index
-        expect(assigns(:dueStudents).count).to eq(3)
+        expect(assigns(:due_students).count).to eq(3)
       end
     end
 

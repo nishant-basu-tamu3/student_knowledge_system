@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# user controller class
 class UsersController < ApplicationController
   @hide_header = true
 

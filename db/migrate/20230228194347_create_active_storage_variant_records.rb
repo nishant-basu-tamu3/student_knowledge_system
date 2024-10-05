@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Migration
 class CreateActiveStorageVariantRecords < ActiveRecord::Migration[7.0]
   def change
     create_table :active_storage_variant_records do |t|

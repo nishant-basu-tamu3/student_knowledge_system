@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Course Controller class
 class CoursesController < ApplicationController
   # before_action :authenticate_user!
   # before_action :authenticate_by_session
@@ -19,9 +20,9 @@ class CoursesController < ApplicationController
     @courses_comb_hash = {}
     @courses_db_result.each do |c|
       if !@courses_comb_hash[c.course_name.strip]
-        courseAllSections = CourseEntries.new
-        courseAllSections.initializeUsingCourseModel(c)
-        @courses_comb_hash[c.course_name.strip] = courseAllSections
+        course_all_sections = CourseEntries.new
+        course_all_sections.initializeUsingCourseModel(c)
+        @courses_comb_hash[c.course_name.strip] = course_all_sections
       else
         course = @courses_comb_hash[c.course_name.strip]
         course.sections.add(c.section)

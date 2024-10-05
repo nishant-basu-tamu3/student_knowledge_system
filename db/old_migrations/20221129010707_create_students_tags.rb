@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Old Migrations
 class CreateStudentsTags < ActiveRecord::Migration[7.0]
   def change
     create_table :students_tags do |t|

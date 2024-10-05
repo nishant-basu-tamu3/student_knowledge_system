@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
+# Student Model Class
 class Student < ApplicationRecord
+
+  # validates :firstname, :lastname, :email, :major, :classification, :uin, :create_tag, presence: true
+  # validate :check_all_fields
+
+  # def check_all_fields
+  #   if [firstname, lastname, email, major, classification, uin, create_tag].any?(&:blank?)
+  #     errors.add(:base, "Fill all fields")
+  #   end
+  # end
+
   has_one_attached :image do |attachable|
     attachable.variant :thumb, resize_to_fill: [500, 500]
   end

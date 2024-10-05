@@ -110,6 +110,13 @@ Scenario: Delete Student Course
     And I click the first "Delete this course of student"
     Then I should see "Given student in a course is deleted."
 
+Scenario: Add an invalid student
+    When I sign in as "team_cluck_admin@gmail.com"
+    And I go to the students page
+    When I click "New student"
+    And I click "Create Student"
+    Then I should see "Student was successfully created"
+
 Scenario: Display Students List
     When I sign in as "team_cluck_admin@gmail.com"
     And I go to the students page
