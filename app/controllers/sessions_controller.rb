@@ -2,10 +2,10 @@
 
 class SessionsController < ApplicationController
   def create
-    email = request.env['omniauth.auth']['info']['email']
+    omniauth_data = request.env['omniauth.auth']
 
-    # If the authentication was successful, meaning the email was found in the omniauth's return, create a new session
-    if email
+    if omniauth_data && omniauth_data['info'] && omniauth_data['info']['email'] # Check for presence
+      email = omniauth_data['info']['email']
 
       user = User.find_by(email:)
 

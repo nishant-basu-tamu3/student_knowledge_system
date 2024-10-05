@@ -149,6 +149,45 @@ RSpec.describe CoursesController, type: :controller do
       get :show, params: { id: @course1.id, sortOrder: 'Reverse Alphabetical' }
       expect(assigns(:student_records).first.records.first.lastname).to eq('Oliphant')
     end
+
+    it 'initializes new student entry when student is not in @student_records_hash' do
+      get :show, params: { id: @course1.id }
+      
+      # Check if the student is initialized correctly
+      student_entry = assigns(:student_records_hash)[@student2.uin]
+      expect(student_entry).to be_present
+    end
+  
+    it 'appends student records when student already exists in @student_records_hash' do
+      # Create a situation where the student already has an entry
+      @student_records_hash = {}
+      existing_student = @student1 # Assume @student1 is already in the hash
+      existing_student_courses = StudentCourse.where(student_id: existing_student.id, course_id: @course1.id)
+  
+      existing_student_courses.each do |student_course|
+        course = Course.find_by(id: student_course.course_id)
+        student_entry = @student_records_hash[existing_student.uin] || StudentEntries.new
+        student_entry.initializeUsingStudentModel(existing_student, course)
+        @student_records_hash[existing_student.uin] = student_entry
+      end
+  
+      # Now get the show action again to simulate adding the existing student
+      get :show, params: { id: @course1.id }
+      
+      # Check if the existing student entry has been updated
+      student_entry = assigns(:student_records_hash)[existing_student.uin]
+      expect(student_entry.records).to include(existing_student)
+      expect(student_entry.semester_section).to include("#{@course1.semester} - #{@course1.section}")
+      expect(student_entry.course_semester).to include("#{@course1.course_name} - #{@course1.semester}")
+    end
+  
+    it 'sorts the list of students based on sort order' do
+      get :show, params: { id: @course1.id, sortOrder: 'Alphabetical' }
+      expect(assigns(:student_records).first.records.first.lastname).to eq('Biel')
+  
+      get :show, params: { id: @course1.id, sortOrder: 'Reverse Alphabetical' }
+      expect(assigns(:student_records).first.records.first.lastname).to eq('Oliphant')
+    end
   end
 
   describe 'GET #new' do
@@ -230,6 +269,42 @@ RSpec.describe CoursesController, type: :controller do
     it 'displays a success notice' do
       delete :destroy, params: { id: @course1.id }
       expect(flash[:notice]).to eq('Course and its info were successfully deleted.')
+    end
+  end
+
+  describe 'GET #set_course' do
+    context 'when the course is found' do
+      before do
+        get :show, params: { id: @course1.id }
+      end
+
+      it 'assigns the course to @course' do
+        expect(assigns(:course)).to eq(@course1)
+      end
+    end
+
+    context 'when the course is not found' do
+      before do
+        get :show, params: { id: 'non-existent-id' } # Using a non-existent ID
+      end
+
+      it 'sets @course to nil' do
+        expect(assigns(:course)).to be_nil
+      end
+
+      it 'redirects to courses_url' do
+        expect(response).to redirect_to(courses_url)
+      end
+
+      it 'sets a flash notice message' do
+        expect(flash[:notice]).to eq('Given course not found.')
+      end
+
+      it 'responds with no content for JSON requests' do
+        request.env['HTTP_ACCEPT'] = 'application/json'
+        get :show, params: { id: 'non-existent-id' } # Same non-existent ID for JSON request
+        expect(response).to have_http_status(:no_content)
+      end
     end
   end
 end
