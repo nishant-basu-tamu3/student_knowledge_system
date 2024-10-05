@@ -50,14 +50,12 @@ RSpec.describe UploadController, type: :controller do
         expect(flash[:notice]).to eq('Upload successful!')
       end
 
-      it 'updates students that already exist' do
-        @prev_student = Student.create(firstname: 'Ethan', lastname: 'Novicio', uin: '12345578', email: 'zeb@tamu.edu',
-                                       classification: 'U2', major: 'CPSC', teacher: @user.email)
+      it "updates students that already exist" do
+        @prev_student = Student.create(firstname:'Ethan', lastname:'Novicio', uin: '830005524', email:'zeb@tamu.edu', classification:'U2', major:'CPSC', teacher:@user.email)
         file = fixture_file_upload('431_image_roster_with_chrome_files.zip', 'application/zip')
-        params = { file:, course_temp: @course1.course_name, section_temp: @course1.section,
-                   semester_temp: @course1.semester }
-        post(:parse, params:)
-        uploaded_student = Student.find_by firstname: 'Ethan'
+        params = { file: file, course_temp: @course1.course_name, section_temp: @course1.section, semester_temp: @course1.semester }
+        post :parse, params: params
+        uploaded_student = Student.find_by uin: '830005524'
         puts "ups: #{uploaded_student.inspect}"
         expect(@prev_student.email).not_to eq(uploaded_student.email)
         expect(flash[:notice]).to eq('Upload successful!')

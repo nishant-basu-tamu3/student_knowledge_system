@@ -126,6 +126,6 @@ Scenario: Sort Students In A Course
     And I fill in "Search by Semester" with "Fall 2022"
     And I click "Search Semester"
     And I click the first "View profile"
-    And I select "Fall 2023" under the semester dropdown
+    And I select "Spring 2023" under the semester dropdown
     And I click "Filter Students List"
     Then I should see "Students in Current View:"
