@@ -146,8 +146,15 @@ class StudentsController < ApplicationController
         new_tag = Tag.find_or_create_by!(tag_name: params[:student][:create_tag], teacher: current_user.email)
         StudentsTag.create!(tag_id: new_tag.id, student_id: params[:id], teacher: current_user.email)
       end
+      
       respond_to do |format|
         if @student.save && tags_success
+          # Find or create the 'default' course
+          @course = Course.find_or_create_by(course_name: 'default', teacher: current_user.email, section: 'default', semester: 'default')
+
+          # Create the StudentCourse record
+          StudentCourse.find_or_create_by(course_id: @course.id, student_id: @student.id)
+
           format.html { redirect_to student_url(@student), notice: 'Student was successfully created.' }
           format.json { render :show, status: :created, location: @student }
         else

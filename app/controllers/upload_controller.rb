@@ -19,6 +19,12 @@ class UploadController < ApplicationController
     Zip::File.open(params[:file]) do |zip_file|
       # if the zip file contains a csv file, parse it
       images_paths = []
+
+
+      zip_file.each do |entry|
+        Rails.logger.debug "\n\n#######ZIP entry: #{entry.name} ##############\n\n\n"
+      end
+
       zip_file.each do |entry|
         # puts entry.name
 
@@ -28,6 +34,7 @@ class UploadController < ApplicationController
           images_paths = html_doc.search('img/@src').map { |s| s.text.strip }
 
           images_paths.each do |path|
+            Rails.logger.debug "\n\n\n\n################Trying to find image with path: #{path}\n\n\n\n"
             # error handling for .display files because the path pushed to images_paths does not match the entry.name, so find_entry does not work without modyifying the path as done below
             if path.include? '.display'
               full_path = path.split('/', 2)
@@ -35,6 +42,7 @@ class UploadController < ApplicationController
               # puts full_path[1]
               images.push(zip_file.find_entry(full_path[1]))
             else
+              Rails.logger.debug "\n\n\n\n\n\n##################### hereererer  #######################3\n\n\n\n\n\n\n"
               images.push(zip_file.find_entry(path))
             end
           end
