@@ -20,4 +20,11 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: { case_sensitive: false }
 
   passwordless_with :email
+  before_save :set_fullname
+
+  private
+
+  def set_fullname
+    self.full_name = "#{firstname} #{lastname}".strip
+  end
 end

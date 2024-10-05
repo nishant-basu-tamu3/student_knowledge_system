@@ -1,16 +1,28 @@
-<div class="bg-gray-200 h-screen w-screen p-[6rem]"=>
-  <div class="drop-shadow-2xl text-center mx-auto rounded-xl bg-[#DBABAB] h-[35rem] w-[30rem] border-4 border-[#9B6262]">
+<div class="bg-gray-200 h-screen w-screen p-[6rem] text-center"=>
+  <div class="drop-shadow-2xl grid place-items-center mx-auto rounded-xl bg-[#DBABAB] h-auto w-1/2 border-4 border-[#9B6262]">
     <%= form_with(model: user, data: {turbo: false}) do |form| %>
-        <div>
-          <h1 class="font-dancing-script text-[#500000] text-[3.5rem] mt-[7rem]"> Create an Account </h1>
+        <div class="text-center mt-8 mb-8">
+          <h1 class="font-dancing-script text-[#500000] text-[3.5rem] mt-4"> Create an Account </h1>
           <div class="flex flex-col font-serif">
           <%= form.label :email %>
           <div class="flex justify-center items-center">
             <%= form.text_field :email, class: "mt-3 mb-3 w-3/4 rounded"%>
           </div>
+          <%= form.label :firstname %>
+          <div class="flex justify-center items-center">
+            <%= form.text_field :firstname, class: "mt-3 mb-3 w-3/4 rounded"%>
+          </div>
+          <%= form.label :lastname %>
+          <div class="flex justify-center items-center">
+            <%= form.text_field :lastname, class: "mt-3 mb-3 w-3/4 rounded"%>
+          </div>
+          <%= form.label :department %>
+          <div class="flex justify-center items-center">
+            <%= form.text_field :department, class: "mt-3 mb-3 w-3/4 rounded"%>
+          </div>
           </div>
         </div>
-        <%= form.submit "Create account", class: "rounded-md text-[1rem] font-serif p-2 bg-gray-200 border-2 w-3/4 border-[#9B6262] hover:bg-gray-300"%>
+        <%= form.submit "Create account", class: "rounded-md text-[1rem] font-serif p-2 bg-gray-200 border-2 w-3/4 border-[#9B6262] hover:bg-gray-300 mb-8"%>
       <% end %>
   </div>
 </div>

@@ -1,8 +1,21 @@
 # Student Knowledge System
 
-https://tamu-sks.herokuapp.com
+Deployed App : https://hive-sks-c9da748e2491.herokuapp.com
 
-## Getting Started (From Zero to Deployed in ... Some Amount of Time)
+Code Climate Report : https://codeclimate.com/github/nishant-basu-tamu3/student_knowledge_system
+
+## CSCE 606 2024 Fall - Team Hive
+* [Team Working Agreement](documentation/Fall2024/Team_Working_Agreement.txt)
+* Team Members
+  * [Nishant Basu](mailto:nishant.basu3@tamu.edu)
+  * [Aum Palande](mailto:aumpalande@tamu.edu)
+  * [Ellika Mishra](mailto:ellikamishra@tamu.edu)
+  * [Raunak Kharbanda](mailto:raunak@tamu.edu)
+  * [Mukil Senthilkumar](mailto:mukilsenthil@tamu.edu)
+  * [Susheel Vadakkekuruppath](mailto:susheelvk@tamu.edu)
+  * [Prakhar Suryavansh](mailto:ps41@tamu.edu)
+
+## Getting Started 
 * be in your dev machine, e.g. a fresh VPS or container (recommend Ubuntu 20+ with >=2 GB RAM)
 * fork this repository: [fork it](https://github.com/philipritchey/student_knowledge_system/fork)
 * clone your fork: `git clone git@github.com:YOU/student_knowledge_system.git`
@@ -25,29 +38,36 @@ https://tamu-sks.herokuapp.com
   * `password: <your API key>`
     * [get your API key from your heroku account](https://dashboard.heroku.com/account)
 * create an app on heroku: `heroku create [appname]`, where `[appname]` is an optional name for the app
+### Deploy an Initial Version of app for getting domain:
+* stage changes: git add .
+* commit changes: git commit -m "initial heroku deployment"
+* deploy to heroku: git push heroku master.
+* At this point your app is not ready.
+* "heroku info -s" in termninal to get app url
+
+## AWS - for storage
 * [create an s3 bucket](https://s3.console.aws.amazon.com/s3/buckets)
-* [create iam role for app to access s3 bucket](https://us-east-1.console.aws.amazon.com/iam/home?region=us-east-1)
-  * take note of the access key id and secret access key
-  * create access policy: in your iam s3 user, under permissions, click add permission, then create inline policy
+  * create a unique email id on gmail for using it for oauth and aws.
+  * Go to aws and create an account with this email id as root user. (Requires Debit/Credit Card)
+  * Create a IAM User.https://www.youtube.com/watch?v=CjKhQoYeR4Q&t=430s
+  * Create a Bucket and Policy using Policy Generator : https://www.youtube.com/watch?v=y4SfQoJpipo
+  * Use these settings while creating Policy :
     * choose `s3` as the service
     * specify the actions allowed:
       * `ListBucket`
       * `PutObject`
       * `GetObject`
       * `DeleteObject`
-    * specify bucket resource ARN for the ListBucket action: click add ARN to restrict access
-      * put name of your s3 bucket in the bucket name field
-    * specify object resource ARN for the PutObject and 2 more actions:
-      * put name of your s3 bucket in the bucket name field
-      * click any next to object
-    * click review policy at the bottom
-    * make sure it looks right and then create it
-* in `config/storage.yml`, make syre `region` and `bucket` fields match yourt bucket's region and name
-* create google oauth2 client id:
-  * [go to google cloud apis & services](https://console.cloud.google.com/apis)
-  * if you've never been here before, you'll need to make a project first and congifure your oauth consent screen
-    * make the project internal
-    * only fill in the required fields:
+  * take note of the access key id and secret access key : Go to dashboard and on top right click the dropdown on your name, click on security_credentials => create access key.
+* in `config/storage.yml`, make sure `region` and `bucket` fields match your bucket's region and name
+
+## Google Oauth: - For Google Login
+
+  * [go to google cloud apis & services](https://console.cloud.google.com/apis) (Use the same email as before for consitency)
+  * Create a new project - give name and no org name
+  * Click on OAuth consent screen on left hand side. 
+  * make the project internal
+  * only fill in the required fields:
       * name: your app's name
       * email: your email
       * authorized domains: your apps domain, e.g. `appname.herokuapp.com`
@@ -57,6 +77,9 @@ https://tamu-sks.herokuapp.com
     * name: your app's name
     * authorized redirect uris, add: `https://appname.herokuapp.com/auth/google_oauth2/callback`
     * take note of the client id and client secret
+
+## Back to App
+* Note : in the place of "..." add your data.
 * remove encrypted credentials that you cannot decrypt: `rm -f config/credentials.yml.enc`
 * create and edit new credentials: `EDITOR=nano rails credentials:edit`
   * add AWS access key and secret (the iam s3 user access key id and secret access key)
@@ -71,8 +94,10 @@ https://tamu-sks.herokuapp.com
       GOOGLE_CLIENT_SECRET: ...
     ```
   * save and exit: `ctrl+o`, `ctrl+x`
-  * take note of the master key in the console
+  * take note of the master key in the console ; config->master.key
 * save master key to heroku as config var (for security): `heroku config:set RAILS_MASTER_KEY=...`
+
+## Magic Link - Google
 * configure email account for sending emails (e.g. one-time magic links)
   * use gmail (because why not?)
   * [create an app password](https://support.google.com/mail/answer/185833?hl=en)
@@ -80,6 +105,14 @@ https://tamu-sks.herokuapp.com
   * `heroku config:set SENDMAIL_USERNAME=the email address you just created/configured`
   * `heroku config:set SENDMAIL_PASSWORD=the app password you just created`
   * `heroku config:set MAIL_HOST=https://appname.herokuapp.com`
+
+* set sendmail config vars on local
+  * `export SENDMAIL_USERNAME=the email address you just created/configured`
+  * `export SENDMAIL_PASSWORD=the app password you just created (app password)`
+  * `export MAIL_HOST="gmail.com"`
+  * the link will be generated in console.
+
+## Re-Deploy
 * stage changes: `git add .`
 * commit changes: `git commit -m "ready to push to heroku"`
 * deploy to heroku: `git push heroku master`
