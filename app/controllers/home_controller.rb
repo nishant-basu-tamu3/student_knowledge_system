@@ -1,49 +1,48 @@
+# frozen_string_literal: true
+
+# Home Controller class
 class HomeController < ApplicationController
   before_action :require_user!
   # before_action :authenticate_user!
   # before_action :authenticate_by_session
 
   def index
+    @current_user = current_user
     @id = current_user.email
-    @dueStudents = Student.getDue(@id)
+    @due_students = Student.getDue(@id)
   end
 
   def stripYear(var)
     tmp = var.strip
-    idx = tmp.rindex(" ")
-    if idx.nil?
-    else
-      idx = idx + 1
-      tmp = tmp[idx..-1].strip
+    idx = tmp.rindex(' ')
+    unless idx.nil?
+      idx += 1
+      tmp = tmp[idx..].strip
     end
-    return tmp
+    tmp
   end
 
   def getYears
-    sems = Course.where(teacher:@id)
-    uniqSems = Set.new
+    sems = Course.where(teacher: @id)
+    uniq_sems = Set.new
     sems.each do |s|
       year = stripYear(s.semester)
-      uniqSems << year
+      uniq_sems << year
     end
-    return uniqSems.length()
+    uniq_sems.length
   end
   helper_method :getYears
 
-
-  def getNumDue()
-    return @dueStudents.length
+  def get_num_due
+    @due_students.length
   end
-  helper_method :getNumDue
+  helper_method :get_num_due
 
-  def getDueStudentQuiz()
-    path = ""
-    if @dueStudents.length > 0
-      student = @dueStudents.sample
-      return quiz_students_path(student)
-    else
-      return home_path
-    end
+  def get_due_student_quiz
+    return home_path unless @due_students.length.positive?
+
+    student = @due_students.sample
+    quiz_students_path(student)
   end
-  helper_method :getDueStudentQuiz
+  helper_method :get_due_student_quiz
 end

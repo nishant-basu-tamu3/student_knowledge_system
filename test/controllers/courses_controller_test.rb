@@ -1,4 +1,6 @@
-require "test_helper"
+# frozen_string_literal: true
+
+require 'test_helper'
 
 class CoursesControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -6,54 +8,55 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     @course = courses(:courseOne)
     @course2 = courses(:courseOneSemesterTwo)
     @student = students(:studentOne)
-	  @tag = tags(:tagOne)
+    @tag = tags(:tagOne)
     @course3 = courses(:courseTwo)
-
   end
 
-  test "should get index" do
+  test 'should get index' do
     get courses_url
     assert_response :success
   end
 
-  test "should get new" do
+  test 'should get new' do
     get new_course_url
     assert_response :success
   end
 
-  test "should create course" do
-    assert_difference("Course.count") do
-      post courses_url, params: { course: { course_name: @course.course_name, section: @course.section, semester: @course.semester} }
+  test 'should create course' do
+    assert_difference('Course.count') do
+      post courses_url,
+           params: { course: { course_name: @course.course_name, section: @course.section,
+                               semester: @course.semester } }
     end
     assert_redirected_to course_url(Course.last)
   end
 
-  test "should successfully render no entries with all search set" do
-    get courses_url, params: {search: "test"}
+  test 'should successfully render no entries with all search set' do
+    get courses_url, params: { search: 'test' }
     assert_response :success
   end
 
-  test "should successfully render partial with all search set" do
-    get courses_url, params: {search: @course.course_name}
+  test 'should successfully render partial with all search set' do
+    get courses_url, params: { search: @course.course_name }
     assert_response :success
   end
 
-  test "should successfully render all entries empty string" do
-    get courses_url, params: {search: ""}
+  test 'should successfully render all entries empty string' do
+    get courses_url, params: { search: '' }
     assert_response :success
   end
 
-  test "should successfully render in Alphabetical order" do
-    get course_url(@course), params: {sortOrder: "Alphabetical"}
+  test 'should successfully render in Alphabetical order' do
+    get course_url(@course), params: { sortOrder: 'Alphabetical' }
     assert_response :success
   end
 
-  test "should successfully render in Reverse Alphabetical order" do
-    get course_url(@course), params: {sortOrder: "Reverse Alphabetical"}
+  test 'should successfully render in Reverse Alphabetical order' do
+    get course_url(@course), params: { sortOrder: 'Reverse Alphabetical' }
     assert_response :success
   end
 
-  test "should show course" do
+  test 'should show course' do
     get course_url(@course)
     assert_response :success
   end
@@ -72,82 +75,82 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to courses_url
   end
 
-  test "should get edit" do
+  test 'should get edit' do
     get edit_course_url(@course)
     assert_response :success
   end
 
-  test "should update course" do
-    patch course_url(@course), params: { course: { course_name: @course.course_name, section: @course.section, semester: @course.semester } }
+  test 'should update course' do
+    patch course_url(@course),
+          params: { course: { course_name: @course.course_name, section: @course.section, semester: @course.semester } }
     assert_redirected_to course_url(@course)
   end
 
-  test "should destroy course" do
-    assert_difference("Course.count", -1) do
+  test 'should destroy course' do
+    assert_difference('Course.count', -1) do
       delete course_url(@course)
     end
 
     assert_redirected_to courses_url
   end
 
-  test "should get course index sign in page" do
+  test 'should get course index sign in page' do
     sign_out users(:userOne)
     get courses_url
     assert_redirected_to '/users/sign_in'
   end
 
-  test "should get new sign in page" do
+  test 'should get new sign in page' do
     sign_out users(:userOne)
     get new_course_url
     assert_redirected_to '/users/sign_in'
   end
 
-  test "should successfully render partial with no filters" do
-      get course_url(@course), params: {selected_semester: '', selected_section: '', selected_tag:''}
-      assert_response :success
+  test 'should successfully render partial with no filters' do
+    get course_url(@course), params: { selected_semester: '', selected_section: '', selected_tag: '' }
+    assert_response :success
   end
 
-  test "should successfully render partial with nil filters" do
-      get course_url(@course), params: {selected_semester: nil, selected_section: nil, selected_tag:nil}
-      assert_response :success
+  test 'should successfully render partial with nil filters' do
+    get course_url(@course), params: { selected_semester: nil, selected_section: nil, selected_tag: nil }
+    assert_response :success
   end
 
-  test "should successfully render partial with only semester filter" do
-      get course_url(@course), params: {selected_semester: @course.semester, selected_section: '', selected_tag:''}
-      assert_response :success
+  test 'should successfully render partial with only semester filter' do
+    get course_url(@course), params: { selected_semester: @course.semester, selected_section: '', selected_tag: '' }
+    assert_response :success
   end
 
-  test "should successfully render partial with only section filter" do
-      get course_url(@course), params: {selected_semester: '', selected_section: @course.section.to_s, selected_tag:''}
-      assert_response :success
+  test 'should successfully render partial with only section filter' do
+    get course_url(@course), params: { selected_semester: '', selected_section: @course.section.to_s, selected_tag: '' }
+    assert_response :success
   end
 
-  test "should successfully render partial with only tags filter" do
-      get course_url(@course), params: {selected_semester: '', selected_section: '', selected_tag: @tag.tag_name}
-      assert_response :success
+  test 'should successfully render partial with only tags filter' do
+    get course_url(@course), params: { selected_semester: '', selected_section: '', selected_tag: @tag.tag_name }
+    assert_response :success
   end
 
-  test "should successfully render partial with all filters set" do
-      get course_url(@course), params: {selected_semester: @course.semester, selected_section: @course.section, selected_tag: @tag.tag_name}
-      assert_response :success
+  test 'should successfully render partial with all filters set' do
+    get course_url(@course),
+        params: { selected_semester: @course.semester, selected_section: @course.section, selected_tag: @tag.tag_name }
+    assert_response :success
   end
 
-  test "should view course history" do
+  test 'should view course history' do
     get courses_history_path(@course)
     assert_response :success
   end
 
-  test "should say course history not found" do
+  test 'should say course history not found' do
     @courseFake = courses(:courseOne)
     @courseFake.id = 10
     get courses_history_path(@courseFake)
     assert_redirected_to courses_url
   end
 
-  test "should get show course no quiz" do
+  test 'should get show course no quiz' do
     get course_url(@course3)
     assert_response :success
   end
-
-
 end

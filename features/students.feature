@@ -109,3 +109,22 @@ Scenario: Delete Student Course
     Then I should see "Edit Student Course History"
     And I click the first "Delete this course of student"
     Then I should see "Given student in a course is deleted."
+
+Scenario: Add an invalid student
+    When I sign in as "team_cluck_admin@gmail.com"
+    And I go to the students page
+    When I click "New student"
+    And I click "Create Student"
+    Then I should see "Student was successfully created"
+
+Scenario: Display Students List
+    When I sign in as "team_cluck_admin@gmail.com"
+    And I go to the students page
+    When I click "New student"
+    When I fill in student "firstname" with "Test"
+    When I fill in student "lastname" with "Student"
+    When I fill in student "email" with "teststudent@email.com"
+    And I click "Create Student"
+    And I click "Back to students"
+    Then I should see "Test"
+    And I should see "teststudent@email.com"

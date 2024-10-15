@@ -1,4 +1,6 @@
-require "test_helper"
+# frozen_string_literal: true
+
+require 'test_helper'
 
 class StudentsControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -7,63 +9,71 @@ class StudentsControllerTest < ActionDispatch::IntegrationTest
     @studentOneCourseOne = student_courses(:studentOneCourseOne)
     @studentOneCourseTwo = student_courses(:studentOneCourseTwo)
     @course = courses(:courseOne)
-	@tag = tags(:tagOne)
+    @tag = tags(:tagOne)
     @tag2 = tags(:tagTwo)
   end
 
-  test "should get index" do
+  test 'should get index' do
     get students_url
     assert_response :success
   end
 
-  test "should get new" do
+  test 'should get new' do
     get new_student_url
     assert_response :success
   end
 
-  test "should create student" do
+  test 'should create student' do
     before_student_count = Student.count
-    post students_url, params: { student: { firstname: @student.firstname, lastname: @student.lastname, uin: "123456", email: @student.email, classification: @student.classification, major: @student.major, notes: @student.notes} }
+    post students_url,
+         params: { student: { firstname: @student.firstname, lastname: @student.lastname, uin: '123456', email: @student.email,
+                              classification: @student.classification, major: @student.major, notes: @student.notes } }
     after_student_count = Student.count
     assert_equal before_student_count + 1, after_student_count
 
     assert_redirected_to student_url(Student.last)
   end
 
-  test "should not create student" do
+  test 'should not create student' do
     before_student_count = Student.count
-    post students_url, params: { student: { firstname: "dsdsd", lastname: "dsd", uin: @student.uin, email: @student.email, classification: @student.classification, major: @student.major, notes: @student.notes} }
+    post students_url,
+         params: { student: { firstname: 'dsdsd', lastname: 'dsd', uin: @student.uin, email: @student.email,
+                              classification: @student.classification, major: @student.major, notes: @student.notes } }
     after_student_count = Student.count
-    after_student_course_count = StudentCourse.count
+    StudentCourse.count
     assert_equal before_student_count, after_student_count
 
     assert_redirected_to students_url
   end
 
-  test "should create student with tag" do
+  test 'should create student with tag' do
     before_student_count = Student.count
-    post students_url, params: { student: { firstname: @student.firstname, lastname: @student.lastname, uin: "123456", email: @student.email, classification: @student.classification, major: @student.major, notes: @student.notes, tags: [@tag.tag_name, @tag2.tag_name, ""]} }
+    post students_url,
+         params: { student: { firstname: @student.firstname, lastname: @student.lastname, uin: '123456', email: @student.email,
+                              classification: @student.classification, major: @student.major, notes: @student.notes, tags: [@tag.tag_name, @tag2.tag_name, ''] } }
     after_student_count = Student.count
     assert_equal before_student_count + 1, after_student_count
 
     assert_redirected_to student_url(Student.last)
   end
 
-  test "should create student with new tag" do
+  test 'should create student with new tag' do
     before_student_count = Student.count
-    post students_url, params: { student: { firstname: @student.firstname, lastname: @student.lastname, uin: "123456", email: @student.email, classification: @student.classification, major: @student.major, notes: @student.notes, create_tag: "test"} }
+    post students_url,
+         params: { student: { firstname: @student.firstname, lastname: @student.lastname, uin: '123456', email: @student.email,
+                              classification: @student.classification, major: @student.major, notes: @student.notes, create_tag: 'test' } }
     after_student_count = Student.count
     assert_equal before_student_count + 1, after_student_count
 
     assert_redirected_to student_url(Student.last)
   end
 
-  test "should show student" do
+  test 'should show student' do
     get student_url(@student)
     assert_response :success
   end
 
-  test "should get edit" do
+  test 'should get edit' do
     get edit_student_url(@student)
     assert_response :success
   end
@@ -82,87 +92,94 @@ class StudentsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to students_url
   end
 
-  test "should update student" do
-    patch student_url(@student), params: { student: {firstname: @student.firstname, lastname: @student.lastname, uin: @student.uin, email: @student.email, classification: @student.classification, major: @student.major, notes: @student.notes} }
+  test 'should update student' do
+    patch student_url(@student),
+          params: { student: { firstname: @student.firstname, lastname: @student.lastname, uin: @student.uin,
+                               email: @student.email, classification: @student.classification, major: @student.major, notes: @student.notes } }
     assert_redirected_to student_url(@student)
   end
 
-  test "should update student with tags" do
-    patch student_url(@student), params: { student: {firstname: @student.firstname, lastname: @student.lastname, uin: @student.uin, email: @student.email, classification: @student.classification, major: @student.major, notes: @student.notes, tags: [@tag.tag_name, @tag2.tag_name, ""]} }
+  test 'should update student with tags' do
+    patch student_url(@student),
+          params: { student: { firstname: @student.firstname, lastname: @student.lastname, uin: @student.uin,
+                               email: @student.email, classification: @student.classification, major: @student.major, notes: @student.notes, tags: [@tag.tag_name, @tag2.tag_name, ''] } }
     assert_redirected_to student_url(@student)
   end
 
-  test "should update student with new tag" do
-    patch student_url(@student), params: { student: {firstname: @student.firstname, lastname: @student.lastname, uin: @student.uin, email: @student.email, classification: @student.classification, major: @student.major, notes: @student.notes, create_tag: "test"} }
+  test 'should update student with new tag' do
+    patch student_url(@student),
+          params: { student: { firstname: @student.firstname, lastname: @student.lastname, uin: @student.uin,
+                               email: @student.email, classification: @student.classification, major: @student.major, notes: @student.notes, create_tag: 'test' } }
     assert_redirected_to student_url(@student)
   end
 
-  test "should destroy student" do
-    assert_difference("Student.count", -1) do
+  test 'should destroy student' do
+    assert_difference('Student.count', -1) do
       delete student_url(@student)
     end
 
     assert_redirected_to students_url
   end
 
-  test "should get student index sign in page" do
+  test 'should get student index sign in page' do
     sign_out users(:userOne)
     get students_url
     assert_redirected_to '/users/sign_in'
   end
 
-  test "should get new sign in page" do
+  test 'should get new sign in page' do
     sign_out users(:userOne)
     get new_student_url
     assert_redirected_to '/users/sign_in'
   end
 
-  test "should successfully render partial with no filters" do
-    get students_url, params: {selected_semester: '', selected_course: '', selected_tag:''}
+  test 'should successfully render partial with no filters' do
+    get students_url, params: { selected_semester: '', selected_course: '', selected_tag: '' }
     assert_response :success
   end
 
-  test "should successfully render partial with nil filters" do
-      get students_url, params: {selected_semester: nil, selected_course: nil, selected_tag:nil}
-      assert_response :success
-  end
-
-  test "should successfully render partial with only semester filter" do
-      get students_url, params: {selected_semester: @course.semester, selected_course: '', selected_tag:''}
-      assert_response :success
-  end
-
-  test "should successfully render partial with only course filter" do
-      get students_url, params: {selected_semester: '', selected_course: @course.course_name, selected_tag:''}
-      assert_response :success
-  end
-
-  test "should successfully render partial with only tags filter" do
-      get students_url, params: {selected_semester: '', selected_course: '', selected_tag: @tag.tag_name}
-      assert_response :success
-  end
-
-  test "should successfully render partial with all filters set" do
-      get students_url, params: {selected_semester: @course.semester, selected_course: @course.course_name, selected_tag: "tag"}
-      assert_response :success
-  end
-
-  test "should successfully render no entries with all search set" do
-    get students_url, params: {search: "test"}
+  test 'should successfully render partial with nil filters' do
+    get students_url, params: { selected_semester: nil, selected_course: nil, selected_tag: nil }
     assert_response :success
   end
 
-  test "should successfully render partial with all search set" do
-    get students_url, params: {search: @student.email}
+  test 'should successfully render partial with only semester filter' do
+    get students_url, params: { selected_semester: @course.semester, selected_course: '', selected_tag: '' }
     assert_response :success
   end
 
-  test "should successfully render all entries empty string" do
-    get students_url, params: {search: ""}
+  test 'should successfully render partial with only course filter' do
+    get students_url, params: { selected_semester: '', selected_course: @course.course_name, selected_tag: '' }
     assert_response :success
   end
 
-  test "should destroy student from all courses" do
+  test 'should successfully render partial with only tags filter' do
+    get students_url, params: { selected_semester: '', selected_course: '', selected_tag: @tag.tag_name }
+    assert_response :success
+  end
+
+  test 'should successfully render partial with all filters set' do
+    get students_url,
+        params: { selected_semester: @course.semester, selected_course: @course.course_name, selected_tag: 'tag' }
+    assert_response :success
+  end
+
+  test 'should successfully render no entries with all search set' do
+    get students_url, params: { search: 'test' }
+    assert_response :success
+  end
+
+  test 'should successfully render partial with all search set' do
+    get students_url, params: { search: @student.email }
+    assert_response :success
+  end
+
+  test 'should successfully render all entries empty string' do
+    get students_url, params: { search: '' }
+    assert_response :success
+  end
+
+  test 'should destroy student from all courses' do
     before_student_count = Student.count
     before_student_course_count = StudentCourse.count
     delete student_url(@student)

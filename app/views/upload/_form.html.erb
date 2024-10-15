@@ -30,7 +30,11 @@
         <div class="col">
           <div class="text-center">
             <!--implement dropzone for submitting zip files-->
-            <%= form.file_field :file, accept: '.zip', multiple: false, class: "dropzone" %>
+            <p class="mb-2">CSV file: </p>
+            <%= form.file_field :csv_file, accept: '.csv', multiple: false, class: "dropzone" %>
+
+            <p class="mb-2 pt-5">Complete Webpage File: </p>
+            <%= form.file_field :complete_webpage_file, multiple:false, class:"dropzone" %>
           </div>
         </div>
       </div>

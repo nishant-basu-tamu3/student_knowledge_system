@@ -1,4 +1,6 @@
-require "active_support/core_ext/integer/time"
+# frozen_string_literal: true
+
+require 'active_support/core_ext/integer/time'
 
 Rails.application.configure do
   # Configure 'rails notes' to inspect Cucumber files
@@ -12,7 +14,7 @@ Rails.application.configure do
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
 
-  #ENV['GOOGLE_OAUTH_CLIENT_ID'] = Rails.application.credentials.dig(:google_oauth_client_id)
+  # ENV['GOOGLE_OAUTH_CLIENT_ID'] = Rails.application.credentials.dig(:google_oauth_client_id)
 
   # Do not eager load code on boot.
   config.eager_load = false
@@ -25,13 +27,13 @@ Rails.application.configure do
 
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
-  if Rails.root.join("tmp/caching-dev.txt").exist?
+  if Rails.root.join('tmp/caching-dev.txt').exist?
     config.action_controller.perform_caching = true
     config.action_controller.enable_fragment_cache_logging = true
 
     config.cache_store = :memory_store
     config.public_file_server.headers = {
-      "Cache-Control" => "public, max-age=#{2.days.to_i}"
+      'Cache-Control' => "public, max-age=#{2.days.to_i}"
     }
   else
     config.action_controller.perform_caching = false
@@ -64,12 +66,12 @@ Rails.application.configure do
 
   # Suppress logger output for asset requests.
   # config.assets.quiet = true
-  
-  # config.action_mailer.perform_deliveries = true
-#   config.action_mailer.raise_delivery_errors = true
-config.assets.css_compressor = nil
 
-  config.action_mailer.default_url_options = {host: "localhost", port: 3000 }
+  # config.action_mailer.perform_deliveries = true
+  #   config.action_mailer.raise_delivery_errors = true
+  config.assets.css_compressor = nil
+
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
   # config.active_support.report_deprecations = false
   # config.action_mailer.perform_deliveries = true
   # config.action_mailer.default_url_options = { host: ENV['MAIL_HOST'] }
@@ -92,9 +94,8 @@ config.assets.css_compressor = nil
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
-  Rails.logger = Logger.new(STDOUT)
+  Rails.logger = Logger.new($stdout)
   config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
 
   config.assets.check_precompiled_asset = false
-  
 end

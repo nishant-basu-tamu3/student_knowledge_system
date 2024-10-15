@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 require 'simplecov'
 SimpleCov.start 'rails'
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path('../config/environment', __dir__)
 # Prevent database truncation if the environment is production
-abort("The Rails environment is running in production mode!") if Rails.env.production?
+abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'spec_helper'
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
-require "passwordless/test_helpers"
+require 'passwordless/test_helpers'
 
 RSpec.configure do |config|
   # config.include Devise::Test::ControllerHelpers, :type => :controller
@@ -58,13 +60,13 @@ RSpec.configure do |config|
   # The different available types are documented in the features, such as in
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
-  
+
   # See https://github.com/rails/rails/issues/34790#issuecomment-450502805
-  if RUBY_VERSION>='2.6.0'
-    if Rails.version < '5'
-      class ActionController::TestResponse < ActionDispatch::TestResponse
+  if RUBY_VERSION >= '2.6.0' && Rails.version < ('5')
+    module ActionController
+      class TestResponse < ActionDispatch::TestResponse
         def recycle!
-          # hack to avoid MonitorMixin double-initialize error:
+          # HACK: to avoid MonitorMixin double-initialize error:
           @mon_mutex_owner_object_id = nil
           @mon_mutex = nil
           initialize
@@ -73,4 +75,3 @@ RSpec.configure do |config|
     end
   end
 end
-

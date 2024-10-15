@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Old Migrations
 class CreateQrosters < ActiveRecord::Migration[7.0]
   def change
     create_table :qrosters do |t|

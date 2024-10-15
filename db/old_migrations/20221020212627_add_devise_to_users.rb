@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+# Old Migrations
 class AddDeviseToUsers < ActiveRecord::Migration[7.0]
   def self.up
     create_table :users do |t|
       ## Database authenticatable
-      t.string :email,              null: false, default: ""
-      t.string :encrypted_password, null: false, default: ""
+      t.string :email,              null: false, default: ''
+      t.string :encrypted_password, null: false, default: ''
       t.string :full_name
       t.string :uid
       t.string :avatar_url
@@ -32,9 +33,9 @@ class AddDeviseToUsers < ActiveRecord::Migration[7.0]
       t.string   :unconfirmed_email # Only if using reconfirmable
 
       # Lockable
-    #   t.integer  :failed_attempts, default: 0, null: false # Only if lock strategy is :failed_attempts
-    #   t.string   :unlock_token # Only if unlock strategy is :email or :both
-    #   t.datetime :locked_at
+      #   t.integer  :failed_attempts, default: 0, null: false # Only if lock strategy is :failed_attempts
+      #   t.string   :unlock_token # Only if unlock strategy is :email or :both
+      #   t.datetime :locked_at
 
       # Uncomment below if timestamps were not included in your original model.
       t.timestamps null: false

@@ -3,10 +3,11 @@
   <%= form_with model: @session, url: send(Passwordless.mounted_as).sign_in_path, data: { turbo: 'false' } do |f| %>
       <% email_field_name = :"passwordless[#{@email_field}]" %>
       <h1 class="font-dancing-script text-[#500000] text-[3.5rem] mt-[7rem]"> Welcome Back! </h1>
+      <p class="font-serif text-[#500000] mt-2"> Follow the link in your email to be verified.</p>
       <p class="font-serif text-[#500000] mt-2"> Please note that this link is one-time use only.</p>
       <div class="flex flex-col items-center font-serif">
 
-          <%= text_field_tag email_field_name, params.fetch(email_field_name, nil), required: true, class: "rounded w-3/4 mt-4 mb-3" %>
+          <%= text_field_tag email_field_name, params.fetch(email_field_name, nil), required: true, class: "rounded w-3/4 mt-4 mb-3 text-center", placeholder: 'Email'%>
 
 
           <%= f.submit I18n.t('passwordless.sessions.new.submit'), class: "rounded-md text-[1rem] font-serif p-2 bg-gray-200 border-2 w-3/4 border-[#9B6262] hover:bg-gray-300"%>

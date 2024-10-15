@@ -17,14 +17,14 @@
       </div>
 
       <div class="flex mx-4 w-full flex-col justify-center">
-          <% if @correctAnswer.nil? %>
-          <% elsif @correctAnswer == true %>
+          <% if @correct_answer.nil? %>
+          <% elsif @correct_answer == true %>
           <p class="font-source-serif-pro my-4" style="color: green">Correct Answer!</p>
           <% else %>
           <p class="font-source-serif-pro my-4" style="color: red">Incorrect Answer. The correct answer was <%= @student.firstname %> <%= @student.lastname %></p>
           <% end %>
     
-        <% if @correctAnswer.nil? %>
+        <% if @correct_answer.nil? %>
         <div class="bg-light border rounded-3 p-4">
           <form action=<%="/students/"+@student.id.to_s + "/quiz" %> class="py-2">
             <% @choices.each do |choice| %>
@@ -44,7 +44,7 @@
         <% end %>
       </div>
   </div>
-  <% if !@correctAnswer.nil?%>
+  <% if !@correct_answer.nil?%>
   <div class="container">
   <%= button_to "Next Student", getDueStudentQuiz() , class:"mt-4 font-source-serif-pro px-4 py-2 font-semibold text-[#500000] border-[#500000] hover:bg-[#ca8484] bg-[#DBABAB] hover:cursor-pointer rounded", :method=>:get  %>
   </div>

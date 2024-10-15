@@ -1,0 +1,34 @@
+Communication 
+Slack should be used for everything, rather than WhatsApp, or other communication platforms.
+Communication with the client should be through email or physical meetings with the whole team.
+
+Agendas:
+Weekly agenda meetings are needed about the stories assigned, meetings with the client, and what are roadblocks we have. 
+This includes clarification of requirements from the client, so that we have a united front when we go to the client.
+We should have a meeting near the beginning of the sprint to make sure everyone knows what is expected of them, and a meeting near the end to check and make sure everyone can finish on time.
+
+Disagreement 
+Maybe have a solid discussion within the team members and the product owner, see if it can be resolved. If it cannot, then look for help from TA or Professor.
+
+Roles 
+	Product Owner: Will be the bridge between the client and the team and see the backlog, update change and distribute it.
+	Scrum Master: Manages the working pace of the team with accountability on the stories. Any roadblocks should be taken care of by them.
+
+Values: 
+Quality product, consistency, Client at the Center.
+
+Roles for retro:
+The Scrum Master will facilitate. Everyone participates and tries to find out how the people are doing. 
+Are there any personal issues which are blocking the development and how can the team help in resolving those?
+Equal time allotted and informed in advance so that the individual comes prepared with their questions and doubts.
+Make sure that everyone was allotted a good amount of work that could be done in a reasonable amount of time
+
+How to handle conflict:
+Have a discussion, try to get to the root of the issue, see if it is a one time thing or happening repeatedly.
+If its a one time thing, then we will change team members involved to see if people can bring up other points or work better with other people. 
+If its not a one time thing, try to fix the issue by asking other team members of their opinions, or try to find other ways and take help from the professor to resolve it.
+
+Definition of done:
+The clear acceptance criteria on each story should be completed, as well as functionally tested by the developer and an extra set of eyes from the team. The requirements should be verified by the client during testing.
+During the Retrospective, we will have concrete actions based on the last retrospective meeting, and the actions should be also logged for it.
+This ensures that everyone is keeping up with the definition of done, and is working to the accepted standard

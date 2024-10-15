@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   post 'upload/index', to: 'upload#parse'
   get 'upload/index', to: 'upload#index'
 
-  resources :quizzes, only: [:index, :show, :new, :create]
+  resources :quizzes, only: %i[index show new create]
   get 'home/index'
   get 'upload', to: 'upload#index'
 
-  post 'quizzes/:id', to:'quizzes#show'
+  post 'quizzes/:id', to: 'quizzes#show'
 
-  #devise_for :users
+  # devise_for :users
 
   resources :courses
   namespace :courses do
@@ -47,4 +49,5 @@ Rails.application.routes.draw do
 
   get '/auth/google_oauth2/callback', to: 'sessions#create'
   get 'users/auth/google_oauth2/callback', to: 'sessions#create'
+  get '/auth/failure', to: redirect('/')
 end
