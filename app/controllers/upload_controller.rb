@@ -16,6 +16,18 @@ class UploadController < ApplicationController
     images = []
     csv = []
 
+    # parse csv file
+    if (params[:csv_file].blank?)
+        redirect_to upload_index_path, notice: 'Please provide a CSV file.'
+    end
+
+    csv_file = params[:csv_file].read
+    csv = CSV.parse(csv_file, headers: true)
+    Rails.logger.info "Collected all student courses #{csv.inspect}"
+    # if the csv file contains empty rows, remove the offensive row
+    csv.delete_if { |row| row.to_hash.values.all?(&:nil?) }
+
+    
     # when a zip file is uploaded, unzip it
     Zip::File.open(params[:file]) do |zip_file|
       # if the zip file contains a csv file, parse it
@@ -45,13 +57,13 @@ class UploadController < ApplicationController
           Rails.logger.debug "images_paths: #{images_paths.inspect}"
           Rails.logger.debug "images: #{images.inspect}"
 
-        elsif entry.name.include? '.csv'
-          # parse
-          csv = CSV.parse(entry.get_input_stream.read, headers: true)
-          Rails.logger.info "Collected all student courses #{csv.inspect}"
-          # if the csv file contains empty rows, remove the offensive row
-          csv.delete_if { |row| row.to_hash.values.all?(&:nil?) }
-        end
+        # elsif entry.name.include? '.csv'
+        #   # parse
+        #   csv = CSV.parse(entry.get_input_stream.read, headers: true)
+        #   Rails.logger.info "Collected all student courses #{csv.inspect}"
+        #   # if the csv file contains empty rows, remove the offensive row
+        #   csv.delete_if { |row| row.to_hash.values.all?(&:nil?) }
+        # end
       end
     end
 
