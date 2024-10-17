@@ -22,7 +22,7 @@ class UploadController < ApplicationController
     end
 
     csv_file = params[:csv_file].read
-    csv = CSV.parse(csv_file, headers: true)
+    csv = CSV.parse(csv_file, headers: true, liberal_parsing: true)
     Rails.logger.info "Collected all student courses #{csv.inspect}"
     # if the csv file contains empty rows, remove the offensive row
     csv.delete_if { |row| row.to_hash.values.all?(&:nil?) }
