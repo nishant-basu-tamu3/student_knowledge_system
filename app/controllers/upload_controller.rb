@@ -79,16 +79,20 @@ class UploadController < ApplicationController
 
         # if the columns are not null, then proceed
         Rails.logger.info "Collected student #{row.inspect}"
-        if row['FIRST NAME'] && row['LAST NAME'] && row['UIN'] && row['EMAIL'] && row['CLASSIFICATION'] && row['MAJOR']
+        if row['Name'] && row['UIN'] && row['Major'] && row['Class'] && row['Email']
           @student = Student.where(uin: row['UIN'].strip, teacher: current_user.email).first
+          # Name is in format last,first
+          # TODO: Add error checking for name-array
+          name_array = row['Name'].split(",")
+
           if !@student
             @student = Student.new(
-              firstname: row['FIRST NAME'].strip,
-              lastname: row['LAST NAME'].strip,
+              firstname: name_array[1].strip,
+              lastname: name_array[0].strip,
               uin: row['UIN'].strip,
-              email: row['EMAIL'].strip,
-              classification: row['CLASSIFICATION'].strip,
-              major: row['MAJOR'].strip,
+              email: row['Email'].strip,
+              classification: row['Class'].strip,
+              major: row['Major'].strip,
               teacher: current_user.email,
               last_practice_at: Time.now - 121.minutes,
               curr_practice_interval: 120
@@ -96,17 +100,17 @@ class UploadController < ApplicationController
             @student.save
           else
             @student.update(
-              firstname: row['FIRST NAME'].strip,
-              lastname: row['LAST NAME'].strip,
+              firstname: name_array[1].strip,
+              lastname: name_array[0].strip,
               uin: row['UIN'].strip,
-              email: row['EMAIL'].strip,
-              classification: row['CLASSIFICATION'].strip,
-              major: row['MAJOR'].strip,
+              email: row['Email'].strip,
+              classification: row['Class'].strip,
+              major: row['Major'].strip,
               teacher: current_user.email
             )
           end
           StudentCourse.find_or_create_by(course_id: @course.id, student_id: @student.id,
-                                          final_grade: row['FINALGRADE'])
+                                          final_grade: row['Final'])
 
           Tempfile.open([uuid]) do |tmp|
             image.extract(tmp.path) { true }
@@ -122,5 +126,6 @@ class UploadController < ApplicationController
     else
       redirect_to upload_index_path, notice: 'Number of images does not match number of students'
     end
+  end
   end
 end
