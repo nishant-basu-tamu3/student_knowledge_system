@@ -20,7 +20,11 @@ class UploadController < ApplicationController
     @cleaned_contents = file_contents.gsub("\r\n", "\n")
     names = extract_names_from_csv if params[:csv_file].present?
     images = extract_images_from_html(names) if params[:complete_webpage_file].present?
-    if names.present? && images.present? && names.length == images.length
+
+    Rails.logger.info "Names length: #{names.length}"
+    Rails.logger.info "Images length: #{images.length}"
+
+    if names.present? && images.present?
       @course = create_course
       StudentCourse.where(course_id: @course.id).destroy_all
       CSV.parse(@cleaned_contents, headers: true, liberal_parsing: true) do |row|
@@ -48,7 +52,6 @@ class UploadController < ApplicationController
     redirect_to courses_url, notice: 'Upload Successful!!'
 
   end
-<<<<<<< HEAD
 
   private
 
@@ -71,6 +74,7 @@ class UploadController < ApplicationController
       cleaned_row = row.to_h
       name_key = cleaned_row.keys.find { |key| key.include?("Name") }
       name = cleaned_row[name_key] if name_key
+      Rails.logger.info "Reading in student #{name}"
       names << name unless name.nil? || name.empty?
     end
 
@@ -104,6 +108,8 @@ class UploadController < ApplicationController
     # Name is in format last,first
     # TODO: Add error checking for name-array
     name_array = cleaned_row[name_key].split(",")
+    Rails.logger.info "Read in firstname: #{name_array[1]}"
+    Rails.logger.info "Read in lastname: #{name_array[0]}"
     
     if !@student_check
       @student = Student.new(
@@ -133,16 +139,21 @@ class UploadController < ApplicationController
     final_key = cleaned_row.keys.find { |key| key.include?("Final") }
     # here is the bug ########################
     Rails.logger.info "Collected all student info #{@student.inspect}"
-    Rails.logger.debug "\n\n\n\n################Trying to find image with path: #{@student}\n\n\n\n"
-    StudentCourse.find_or_create_by(course_id: @course.id, student_id: @student[0].id,
+    Rails.logger.debug "\nTrying to find image with path: #{@student[0].inspect}\n"
+    Rails.logger.debug "course id: #{@course.id}" 
+
+    if (@student[0].nil?)
+        StudentCourse.find_or_create_by(course_id: @course.id, student_id: @student.id,
                                     final_grade: cleaned_row[final_key])
+        @student.image = images[cleaned_row[name_key]]
+    else
+        StudentCourse.find_or_create_by(course_id: @course.id, student_id: @student[0].id,
+                                        final_grade: cleaned_row[final_key])
+        @student[0].image = images[cleaned_row[name_key]]
+    end
     # TODO: Link image with student
     # @student[0].image = images[cleaned_row[name_key]]
-
+    Rails.logger.info "Finished student #{name_array[1]}"
   end
 
 end
-=======
-  end
-end
->>>>>>> 1f1a290 (Fixed Parse Script for new Howdy CSV)
