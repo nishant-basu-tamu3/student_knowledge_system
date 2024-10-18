@@ -24,3 +24,6 @@ yarn-debug.log*
 view/
     courses
 config/
+    credentials.yml.enc
+    storage.yml
+courses
