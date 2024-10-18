@@ -84,6 +84,7 @@
             </td>
             <td>
               <%= button_to "Show this student", student.records[0], :method => :get, class: "hover:underline hover:underline-offset-4"%>
+              <%= button_to "Delete this student", student_path(:id=>student.records[0].id, :type => "all"), method: :delete, id: "delete-student-#{student.records[0].id}", class: "hover:underline hover:underline-offset-4"%>
             </td>
           </tr>
         <% end %>
