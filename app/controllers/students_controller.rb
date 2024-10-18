@@ -119,14 +119,19 @@ class StudentsController < ApplicationController
       student_course_entry.course_record = course_db_entry
     end
 
-    @student_course_records = @student_course_records_hash.values
-    Rails.logger.info "Collected all student courses #{@student_course_records.inspect}"
-  end
+        @student_course_records = @student_course_records_hash.values
+        Rails.logger.info "Collected all student courses #{@student_course_records.inspect}"
+        @majors = Student.distinct.pluck(:major).compact.reject(&:empty?)
+        @classifications = Student.distinct.pluck(:classification).compact.reject(&:empty?)
+  
+    end
 
-  # GET /students/new
-  def new
-    @student = Student.new
-  end
+    # GET /students/new
+    def new
+        @student = Student.new
+        @majors = Student.distinct.pluck(:major).compact.reject(&:empty?)
+        @classifications = Student.distinct.pluck(:classification).compact.reject(&:empty?)
+    end
 
   # POST /students/
   def create
