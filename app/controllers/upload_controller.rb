@@ -48,6 +48,7 @@ class UploadController < ApplicationController
     redirect_to courses_url, notice: 'Upload Successful!!'
 
   end
+<<<<<<< HEAD
 
   private
 
@@ -92,7 +93,7 @@ class UploadController < ApplicationController
         end
       end
     end
-
+    
     images
   end
 
@@ -141,3 +142,7 @@ class UploadController < ApplicationController
   end
 
 end
+=======
+  end
+end
+>>>>>>> 1f1a290 (Fixed Parse Script for new Howdy CSV)
