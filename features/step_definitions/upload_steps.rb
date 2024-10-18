@@ -9,6 +9,14 @@ When('I upload a zip file') do
   attach_file('file', './app/resources/ProfRitchey_Template.zip')
 end
 
+When('I upload a csv file') do
+    attach_file('csv_file', './app/resources/export.csv')
+end
+
+When('I upload a complete webpage file') do
+    attach_file('complete_webpage_file', './app/resources/Howdy Dashboard _ Howdy.htm')
+end
+
 When('I input form information') do
   fill_in('course_temp', with: 'CSCE 606')
   fill_in('section_temp', with: '000')

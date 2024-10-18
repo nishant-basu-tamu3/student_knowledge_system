@@ -33,7 +33,8 @@ Scenario: All students viewable
 Scenario: Search by semester
     When I sign in as "team_cluck_admin@gmail.com"
     Given I am on the upload page
-    When I upload a zip file
+    When I upload a csv file
+    And I upload a complete webpage file
     And I input form information
     When I click save
     Then I should see the upload was successful
@@ -45,7 +46,8 @@ Scenario: Search by semester
 Scenario: Search by tag
     When I sign in as "team_cluck_admin@gmail.com"
     Given I am on the upload page
-    When I upload a zip file
+    When I upload a csv file
+    And I upload a complete webpage file
     And I input form information
     When I click save
     Then I should see the upload was successful
@@ -80,7 +82,8 @@ Scenario: Add and Delete a student
 Scenario: Update Student Course
     When I sign in as "team_cluck_admin@gmail.com"
     Given I am on the upload page
-    When I upload a zip file
+    When I upload a csv file
+    And I upload a complete webpage file
     And I input form information
     When I click save
     And I go to the students page
@@ -96,7 +99,8 @@ Scenario: Update Student Course
 Scenario: Delete Student Course
     When I sign in as "team_cluck_admin@gmail.com"
     Given I am on the upload page
-    When I upload a zip file
+    When I upload a csv file
+    And I upload a complete webpage file
     And I input form information
     When I click save
     Then I should see the upload was successful

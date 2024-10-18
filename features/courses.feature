@@ -87,7 +87,8 @@ Scenario: Add and Create a Course
     When I sign in as "team_cluck_admin@gmail.com"
     And I go to the courses page
     And I click "New course"
-    When I upload a zip file with .display files
+    When I upload a csv file
+    And I upload a complete webpage file
     And I input 431 form information
     When I click save
     Then I should see the upload was successful
