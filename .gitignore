@@ -21,3 +21,6 @@ yarn-debug.log*
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+view/
+    courses
+config/
