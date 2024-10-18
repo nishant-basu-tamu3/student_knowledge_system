@@ -18,53 +18,35 @@ class UploadController < ApplicationController
 
     # parse csv file
     if (params[:csv_file].blank?)
-        redirect_to upload_index_path, notice: 'Please provide a CSV file.'
+        redirect_to upload_index_path
+        flash[:alert] =  'Please provide a CSV file.'
+        return
     end
 
-    csv_file = params[:csv_file].read
+    if (params[:complete_webpage_file].blank?)
+      redirect_to upload_index_path
+      flash[:alert] =  'Please provide a Complete Webpage file.'
+      return
+    end
+
+    csv_file = File.read(params[:csv_file]).gsub("\r\n", "\n")
     csv = CSV.parse(csv_file, headers: true, liberal_parsing: true)
     Rails.logger.info "Collected all student courses #{csv.inspect}"
+    
+    cleaned_headers = clean_csv_headers(csv.headers)
+
+    new_rows = csv.map do |row|
+      CSV::Row.new(cleaned_headers, row.fields)
+    end
+
+    csv = CSV::Table.new(new_rows)
+
     # if the csv file contains empty rows, remove the offensive row
     csv.delete_if { |row| row.to_hash.values.all?(&:nil?) }
 
-    
     # when a zip file is uploaded, unzip it
-    Zip::File.open(params[:file]) do |zip_file|
-      # if the zip file contains a csv file, parse it
-      images_paths = []
-
-      zip_file.each do |entry|
-        Rails.logger.debug "\n\n#######ZIP entry: #{entry.name} ##############\n\n\n"
-
-        if entry.name.include? '.htm'
-          # parse html doc for correct order of pictures, csv & images zip is mismatched but html gets order correct
-          html_doc = Nokogiri::HTML(entry.get_input_stream.read)
-          images_paths = html_doc.search('img/@src').map { |s| s.text.strip }
-
-          images_paths.each do |path|
-            Rails.logger.debug "\n\n\n\n################Trying to find image with path: #{path}\n\n\n\n"
-            # error handling .display as path pushed to images_paths doesn't match entry.name,so find_entry doen't work without modyifying path
-            if path.include? '.display'
-              full_path = path.split('/', 2)
-              # puts full_path
-              # puts full_path[1]
-              images.push(zip_file.find_entry(full_path[1]))
-            else
-              Rails.logger.debug "\n\n\n\n\n\n##################### hereererer  #######################3\n\n\n\n\n\n\n"
-              images.push(zip_file.find_entry(path))
-            end
-          end
-          Rails.logger.debug "images_paths: #{images_paths.inspect}"
-          Rails.logger.debug "images: #{images.inspect}"
-
-        # elsif entry.name.include? '.csv'
-        #   # parse
-        #   csv = CSV.parse(entry.get_input_stream.read, headers: true)
-        #   Rails.logger.info "Collected all student courses #{csv.inspect}"
-        #   # if the csv file contains empty rows, remove the offensive row
-        #   csv.delete_if { |row| row.to_hash.values.all?(&:nil?) }
-        # end
-      end
+    if !params[:file].blank?
+      unload_zip(params[:file])
     end
 
     # if number of rows in csv file is equal to number of images in zip file, then proceed. Otherwise, throw an error
@@ -127,5 +109,55 @@ class UploadController < ApplicationController
       redirect_to upload_index_path, notice: 'Number of images does not match number of students'
     end
   end
+  # end
+
+  private
+
+  def unload_zip(file)
+    Zip::File.open(params[:file]) do |zip_file|
+      # if the zip file contains a csv file, parse it
+      images_paths = []
+
+      zip_file.each do |entry|
+        Rails.logger.debug "\n\n#######ZIP entry: #{entry.name} ##############\n\n\n"
+
+        if entry.name.include? '.htm'
+          # parse html doc for correct order of pictures, csv & images zip is mismatched but html gets order correct
+          html_doc = Nokogiri::HTML(entry.get_input_stream.read)
+          images_paths = html_doc.search('img/@src').map { |s| s.text.strip }
+
+          images_paths.each do |path|
+            Rails.logger.debug "\n\n\n\n################Trying to find image with path: #{path}\n\n\n\n"
+            # error handling .display as path pushed to images_paths doesn't match entry.name,so find_entry doen't work without modyifying path
+            if path.include? '.display'
+              full_path = path.split('/', 2)
+              # puts full_path
+              # puts full_path[1]
+              images.push(zip_file.find_entry(full_path[1]))
+            else
+              Rails.logger.debug "\n\n\n\n\n\n##################### hereererer  #######################3\n\n\n\n\n\n\n"
+              images.push(zip_file.find_entry(path))
+            end
+          end
+          Rails.logger.debug "images_paths: #{images_paths.inspect}"
+          Rails.logger.debug "images: #{images.inspect}"
+
+          # elsif entry.name.include? '.csv'
+          #   # parse
+          #   csv = CSV.parse(entry.get_input_stream.read, headers: true)
+          #   Rails.logger.info "Collected all student courses #{csv.inspect}"
+          #   # if the csv file contains empty rows, remove the offensive row
+          #   csv.delete_if { |row| row.to_hash.values.all?(&:nil?) }
+        end
+      end
+    end
+  end
+
+  def clean_csv_headers(headers)
+    headers.map do |header|
+      header.strip               # Trim whitespace
+            .gsub("\n", ' ')     # Replace newlines with a space
+            .gsub('"', '')       # Remove surrounding quotes
+    end
   end
 end
