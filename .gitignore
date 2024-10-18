@@ -21,9 +21,9 @@ yarn-debug.log*
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+courses
 view/
     courses
 config/
     credentials.yml.enc
     storage.yml
-courses
