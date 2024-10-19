@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   include Passwordless::ControllerHelpers
 
   helper_method :current_user
+  before_action :redirect_authenticated_user
 
   private
 
@@ -22,5 +23,11 @@ class ApplicationController < ActionController::Base
     return if current_user
 
     redirect_to users.sign_in_path, alert: 'Please sign in to view this content'
+  end
+
+  def redirect_authenticated_user
+    return if request.path == users.sign_out_path
+
+    redirect_to home_path if current_user && request.path == root_path
   end
 end
