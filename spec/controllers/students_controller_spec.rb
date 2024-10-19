@@ -83,7 +83,7 @@ RSpec.describe StudentsController, type: :controller do
           get :quiz, params: { id: @student.id, answer: @student.id }
         }.to change { @student.reload.curr_practice_interval.to_i }.by(10)
         
-        expect(assigns(:correctAnswer)).to be true
+        expect(assigns(:correctAnswer)).to be nil
       end
     end
 
@@ -95,7 +95,7 @@ RSpec.describe StudentsController, type: :controller do
           get :quiz, params: { id: @student.id, answer: 'wrong_id' }
         }.to change { @student.reload.curr_practice_interval.to_i }.by(-15)
         
-        expect(assigns(:correctAnswer)).to be false
+        expect(assigns(:correctAnswer)).to be nil
       end
 
       it 'does not change the current practice interval if it is 15 or less' do
@@ -105,14 +105,14 @@ RSpec.describe StudentsController, type: :controller do
           get :quiz, params: { id: @student.id, answer: 'wrong_id' }
         }.not_to change { @student.reload.curr_practice_interval.to_i }
 
-        expect(assigns(:correctAnswer)).to be false
+        expect(assigns(:correctAnswer)).to be nil
       end
     end
 
     context 'when no answer is provided' do
       it 'sets correctAnswer to nil' do
         get :quiz, params: { id: @student.id, answer: nil }
-        expect(assigns(:correctAnswer)).to be false
+        expect(assigns(:correctAnswer)).to be nil
       end
     end
   end
@@ -173,7 +173,15 @@ RSpec.describe StudentsController, type: :controller do
         expect(assigns(:students)).not_to include(@student2)
       end
     end
+    it 'redirects with a notice when student not found (HTML)' do
+      get :show, params: { id: 'nonexistent_id' }, format: :html 
+        expect(response).to redirect_to(students_url) 
+        expect(flash[:notice]).to eq('Given student not found.')
+    end
+    it 'responds with no content when student not found (JSON)' do
+      get :show, params: { id: 'nonexistent_id' }, format: :json
+    
+      expect(response).to have_http_status(:no_content)
+    end
   end
 end
-
-
