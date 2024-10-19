@@ -27,7 +27,7 @@ RSpec.describe UploadController, type: :controller do
     context 'with valid file and contents' do
       before do
         @course1 = Course.create(course_name: 'test course1', teacher: @user.email, section: '000',
-                                 semester: 'Fall 2001')
+                                 semester: 'Fall 2002')
       end
 
       it 'creates student entries for a zip with .jpg' do
