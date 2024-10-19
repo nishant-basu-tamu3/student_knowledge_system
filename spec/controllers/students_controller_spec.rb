@@ -188,7 +188,15 @@ RSpec.describe StudentsController, type: :controller do
         expect(assigns(:students)).not_to include(@student2)
       end
     end
+    it 'redirects with a notice when student not found (HTML)' do
+      get :show, params: { id: 'nonexistent_id' }, format: :html 
+        expect(response).to redirect_to(students_url) 
+        expect(flash[:notice]).to eq('Given student not found.')
+    end
+    it 'responds with no content when student not found (JSON)' do
+      get :show, params: { id: 'nonexistent_id' }, format: :json
+    
+      expect(response).to have_http_status(:no_content)
+    end
   end
 end
-
-

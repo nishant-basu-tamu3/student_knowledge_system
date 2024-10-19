@@ -3,19 +3,16 @@
 # Course Model Class
 class Course < ApplicationRecord
   def self.search_course(search, teacher)
-    if search
-      search_type = Course.where(course_name: search, teacher:).all
-      if search_type
-        where(id: search_type)
-      elsif search_type.empty?
-        @courses_db_result = Course.where(teacher:)
-      else
-        @courses_db_result = Course.where(id: 0)
-      end
+    if search.present?
+      search_type = Course.where(course_name: search, teacher: teacher)
+      return search_type if search_type.any?
+      
+      Course.where(teacher: teacher) # Return all courses if no match found
     else
-      @courses_db_result = Course.where(teacher:)
+      Course.where(teacher: teacher) # Return courses by teacher if search is nil or empty
     end
   end
+  
 
   def self.search_semester(search, teacher)
     if search
