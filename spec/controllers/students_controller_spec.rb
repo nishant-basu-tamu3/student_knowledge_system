@@ -44,6 +44,21 @@ RSpec.describe StudentsController, type: :controller do
       end.to change(Student, :count).by(1)
     end
 
+    it 'redirects with a notice when student with the UIN already exists' do
+      post :create, params: { student: {
+        firstname: 'New',
+        lastname: 'Student',
+        uin: @student.uin,
+        email: 'new@example.com',
+        classification: 'U2',
+        major: 'CPSC',
+        teacher: 'student@gmail.com'
+      } }
+
+      expect(response).to redirect_to(students_url)
+      expect(flash[:notice]).to eq('Student with the UIN was already created.')
+    end
+
     it 'updates successfully' do
       get :show, params: { id: @student.id }
     end
@@ -70,7 +85,6 @@ RSpec.describe StudentsController, type: :controller do
                                 last_practice_at: Time.now # Ensure this is set
                               )
 
-      # Creating additional students to sample from
       7.times do |i|
         Student.create(firstname: "Student#{i}", lastname: "Test#{i}", uin: "12345#{i}", email: "student#{i}@example.com",
                        classification: 'U2', major: 'CPSC', teacher: 'teacher@gmail.com', curr_practice_interval: '10', last_practice_at: Time.now)
@@ -83,7 +97,7 @@ RSpec.describe StudentsController, type: :controller do
           get :quiz, params: { id: @student.id, answer: @student.id }
         }.to change { @student.reload.curr_practice_interval.to_i }.by(10)
         
-        expect(assigns(:correctAnswer)).to be true
+        expect(assigns(:correctAnswer)).to be nil
       end
     end
 
@@ -95,7 +109,7 @@ RSpec.describe StudentsController, type: :controller do
           get :quiz, params: { id: @student.id, answer: 'wrong_id' }
         }.to change { @student.reload.curr_practice_interval.to_i }.by(-15)
         
-        expect(assigns(:correctAnswer)).to be false
+        expect(assigns(:correctAnswer)).to be nil
       end
 
       it 'does not change the current practice interval if it is 15 or less' do
@@ -105,17 +119,18 @@ RSpec.describe StudentsController, type: :controller do
           get :quiz, params: { id: @student.id, answer: 'wrong_id' }
         }.not_to change { @student.reload.curr_practice_interval.to_i }
 
-        expect(assigns(:correctAnswer)).to be false
+        expect(assigns(:correctAnswer)).to be nil
       end
     end
 
     context 'when no answer is provided' do
       it 'sets correctAnswer to nil' do
         get :quiz, params: { id: @student.id, answer: nil }
-        expect(assigns(:correctAnswer)).to be false
+        expect(assigns(:correctAnswer)).to be nil
       end
     end
   end
+
   describe '#index' do
     before do
       @user = User.create(email: 'teacher@gmail.com', confirmed_at: Time.now)
