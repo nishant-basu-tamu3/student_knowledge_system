@@ -15,9 +15,11 @@ RSpec.describe HomeController, type: :controller do
                              semester: 'Spring 2024')
 
     @student1 = Student.create(firstname: 'Zebulun', lastname: 'Oliphant', uin: '734826482', email: 'zeb@tamu.edu',
-                               classification: 'U2', major: 'CPSC', teacher: 'student@gmail.com', last_practice_at: Time.now)
+                               classification: 'U2', major: 'CPSC', teacher: 'student@gmail.com',
+                               last_practice_at: Time.now)
     @student2 = Student.create(firstname: 'Webulun', lastname: 'Woliphant', uin: '734826483', email: 'web@tamu.edu',
-                               classification: 'U2', major: 'CPSC', teacher: 'student@gmail.com', last_practice_at: Time.now)
+                               classification: 'U2', major: 'CPSC', teacher: 'student@gmail.com',
+                               last_practice_at: Time.now)
   end
 
   describe 'GET index' do
@@ -45,7 +47,8 @@ RSpec.describe HomeController, type: :controller do
       it 'assigns @due_students with due students' do
         # Add due students
         Student.create(firstname: 'Due', lastname: 'Student', uin: '123456789', email: 'due@student.com',
-                       classification: 'U1', major: 'CPSC', teacher: @user.email, last_practice_at: Time.now, curr_practice_interval: 0)
+                       classification: 'U1', major: 'CPSC', teacher: @user.email,
+                       last_practice_at: Time.now, curr_practice_interval: 0)
         get :index
         expect(assigns(:due_students).count).to eq(3)
       end
@@ -54,12 +57,12 @@ RSpec.describe HomeController, type: :controller do
     describe '#stripYear' do
       it 'returns the last word of the string if the string has multiple words' do
         controller = HomeController.new
-        expect(controller.stripYear('Spring 2023')).to eq('2023')
+        expect(controller.strip_year('Spring 2023')).to eq('2023')
       end
 
       it 'returns the entire string if the string has only one word' do
         controller = HomeController.new
-        expect(controller.stripYear('Spring')).to eq('Spring')
+        expect(controller.strip_year('Spring')).to eq('Spring')
       end
     end
 
@@ -70,7 +73,7 @@ RSpec.describe HomeController, type: :controller do
 
       it "returns the number of unique years in the teacher's courses" do
         get :index
-        expect(controller.getYears).to eq(2)
+        expect(controller.years).to eq(2)
       end
     end
   end

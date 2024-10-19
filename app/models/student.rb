@@ -2,7 +2,6 @@
 
 # Student Model Class
 class Student < ApplicationRecord
-
   # validates :firstname, :lastname, :email, :major, :classification, :uin, :create_tag, presence: true
   # validate :check_all_fields
 
@@ -33,12 +32,12 @@ class Student < ApplicationRecord
   end
 
   # get the number of students due for quizzing
-  def self.getDue(teacher)
+  def self.get_due(teacher)
     students = Student.where(teacher:)
-    dueStudents = []
+    due_students = []
     students.each do |student|
-      dueStudents += [student] if (student.last_practice_at + student.curr_practice_interval.to_i.minutes) < Time.now
+      due_students += [student] if (student.last_practice_at + student.curr_practice_interval.to_i.minutes) < Time.now
     end
-    dueStudents
+    due_students
   end
 end

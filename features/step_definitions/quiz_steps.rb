@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Given('I am on the quiz page for student with existing id') do
-  @student = Student.order("RANDOM()").first
+  @student = Student.order('RANDOM()').first
   visit quiz_students_path(@student.id)
 end
 
@@ -46,26 +46,26 @@ Then('I should not see any feedback about correctness') do
 end
 
 Then("the student's practice interval should be doubled") do
-  oldInterval = @student.curr_practice_interval.to_i
-  newInterval = oldInterval * 2
+  old_interval = @student.curr_practice_interval.to_i
+  new_interval = old_interval * 2
   @student.reload
-  expect(@student.curr_practice_interval.to_i).to eq(newInterval)
+  expect(@student.curr_practice_interval.to_i).to eq(new_interval)
 end
 
 Then("the student's practice interval should be halved if it was greater than 15") do
-  oldInterval = @student.curr_practice_interval.to_i
+  old_interval = @student.curr_practice_interval.to_i
   @student.reload
   if @student.curr_practice_interval.to_i > 15
-    expect(@student.curr_practice_interval.to_i).to eq(oldInterval / 2)
+    expect(@student.curr_practice_interval.to_i).to eq(old_interval / 2)
   else
-    expect(@student.curr_practice_interval.to_i).to eq(oldInterval)
+    expect(@student.curr_practice_interval.to_i).to eq(old_interval)
   end
 end
 
 Then("the student's practice interval should remain unchanged") do
-  oldInterval = @student.curr_practice_interval.to_i
+  old_interval = @student.curr_practice_interval.to_i
   @student.reload
-  expect(@student.curr_practice_interval.to_i).to eq(oldInterval)
+  expect(@student.curr_practice_interval.to_i).to eq(old_interval)
 end
 
 Then("the student's last practice time should be updated") do
@@ -74,7 +74,7 @@ Then("the student's last practice time should be updated") do
 end
 
 Then("the student's last practice time should remain unchanged") do
-  lastPrac = @student.last_practice_at
+  last_prac = @student.last_practice_at
   @student.reload
-  expect(@student.last_practice_at).to be_within(1.minute).of(lastPrac)
+  expect(@student.last_practice_at).to be_within(1.minute).of(last_prac)
 end

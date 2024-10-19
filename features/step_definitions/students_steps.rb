@@ -34,3 +34,9 @@ When('I fill in the first student course {string} with {string}') do |string, st
   all("input[name='student_course[#{string}]']").first.fill_in with: string2
 end
 
+And(/^I click the delete button for student "(.*?)"$/) do |student_name|
+  student_row = find('tr', text: student_name)
+  within(student_row) do
+    click_button 'Delete this student'
+  end
+end

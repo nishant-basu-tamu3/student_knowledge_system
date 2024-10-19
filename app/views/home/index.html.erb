@@ -8,9 +8,9 @@
     <div class="grid">
       <div  class="">
         <h2 class="text-[1.5rem] font-source-serif-pro mt-2">Welcome Back!</h2>
-        <p class="text-[1.15rem] font-source-serif-pro mt-2 mb-6"><b>Students due for you to practice:</b> <%= get_num_due() %></p>
-        <% if get_num_due() > 0 %>
-        <a  class="font-fira-sans px-4 py-3 bg-[#eacece] hover:bg-[#DBABAB] drop-shadow rounded-xl border-2 border-[#e5c2c2]" href= <%= get_due_student_quiz() %> >Practice now!</a>
+        <p class="text-[1.15rem] font-source-serif-pro mt-2 mb-6"><b>Students due for you to practice:</b> <%= num_due() %></p>
+        <% if num_due() > 0 %>
+        <a  class="font-fira-sans px-4 py-3 bg-[#eacece] hover:bg-[#DBABAB] drop-shadow rounded-xl border-2 border-[#e5c2c2]" href= <%= due_student_quiz() %> >Practice now!</a>
         <% end %>
       </div>
 
@@ -28,7 +28,7 @@
             <div class="row p-2 pt-0">
               <div class="col font-fira-sans">
                 <p><h4 class="m-2">Teaching Summary:</h4></p>
-                <p><b>Years:</b> <%= getYears() %></p>
+                <p><b>Years:</b> <%= years() %></p>
                 <p><b>Semesters:</b> <%= Course.where(teacher:@id).distinct.count(:semester)%></p>
                 <p><b>Courses:</b> <%= Course.where(teacher:@id).distinct.count(:course_name)%></p>
                 <p><b>Students:</b> <%= Student.where(teacher:@id).distinct.count(:uin)%></p>

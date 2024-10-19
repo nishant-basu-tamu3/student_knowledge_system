@@ -5,11 +5,11 @@ require 'test_helper'
 class CoursesControllerTest < ActionDispatch::IntegrationTest
   setup do
     sign_in users(:userOne)
-    @course = courses(:courseOne)
-    @course2 = courses(:courseOneSemesterTwo)
-    @student = students(:studentOne)
-    @tag = tags(:tagOne)
-    @course3 = courses(:courseTwo)
+    @course = courses(:course_one)
+    @course2 = courses(:course_one_semester_two)
+    @student = students(:student_one)
+    @tag = tags(:tag_one)
+    @course3 = courses(:course_two)
   end
 
   test 'should get index' do
@@ -143,9 +143,9 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should say course history not found' do
-    @courseFake = courses(:courseOne)
-    @courseFake.id = 10
-    get courses_history_path(@courseFake)
+    @course_fake = courses(:course_one)
+    @course_fake.id = 10
+    get courses_history_path(@course_fake)
     assert_redirected_to courses_url
   end
 

@@ -21,7 +21,7 @@ class CoursesController < ApplicationController
     @courses_db_result.each do |c|
       if !@courses_comb_hash[c.course_name.strip]
         course_all_sections = CourseEntries.new
-        course_all_sections.initializeUsingCourseModel(c)
+        course_all_sections.initialize_using_course_model(c)
         @courses_comb_hash[c.course_name.strip] = course_all_sections
       else
         course = @courses_comb_hash[c.course_name.strip]
@@ -114,7 +114,7 @@ class CoursesController < ApplicationController
         course = Course.find_by(id: student_course.course_id)
         if !@student_records_hash[student.uin]
           student_entry = StudentEntries.new
-          student_entry.initializeUsingStudentModel(student, course)
+          student_entry.initialize_using_student_model(student, course)
           @student_records_hash[student.uin] = student_entry
         else
           student_entry = @student_records_hash[student.uin]

@@ -128,3 +128,16 @@ Scenario: Display Students List
     And I click "Back to students"
     Then I should see "Test"
     And I should see "teststudent@email.com"
+
+Scenario: Delete a student
+    When I sign in as "team_cluck_admin@gmail.com"
+    And I go to the students page
+    When I click "New student"
+    When I fill in student "firstname" with "New"
+    When I fill in student "lastname" with "Student"
+    When I fill in student "email" with "newstudent@email.com"
+    And I click "Create Student"
+    Then I should see "Student was successfully created"
+    And I go to the students page
+    And I click the delete button for student "New"
+    Then I should see "New student"

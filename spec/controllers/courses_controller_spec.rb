@@ -307,4 +307,40 @@ RSpec.describe CoursesController, type: :controller do
       end
     end
   end
+
+  describe 'GET #set_course' do
+    context 'when the course is found' do
+      before do
+        get :show, params: { id: @course1.id }
+      end
+
+      it 'assigns the course to @course' do
+        expect(assigns(:course)).to eq(@course1)
+      end
+    end
+
+    context 'when the course is not found' do
+      before do
+        get :show, params: { id: 'non-existent-id' } # Using a non-existent ID
+      end
+
+      it 'sets @course to nil' do
+        expect(assigns(:course)).to be_nil
+      end
+
+      it 'redirects to courses_url' do
+        expect(response).to redirect_to(courses_url)
+      end
+
+      it 'sets a flash notice message' do
+        expect(flash[:notice]).to eq('Given course not found.')
+      end
+
+      it 'responds with no content for JSON requests' do
+        request.env['HTTP_ACCEPT'] = 'application/json'
+        get :show, params: { id: 'non-existent-id' } # Same non-existent ID for JSON request
+        expect(response).to have_http_status(:no_content)
+      end
+    end
+  end
 end

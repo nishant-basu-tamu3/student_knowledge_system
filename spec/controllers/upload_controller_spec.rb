@@ -67,14 +67,16 @@ RSpec.describe UploadController, type: :controller do
     # context "with invalid file and contents" do
     #   it "redirects when CSV column contents are different than expected" do
     #     file = fixture_file_upload('Wrong_Cols.zip', 'application/zip')
-    #     params = { file: file, course_temp: @course.course_name, section_temp: @course.section, semester_temp: @course.semester }
+    #     params = { file: file, course_temp: @course.course_name, section_temp: @course.section,
+    #                semester_temp: @course.semester }
     #     post :parse, params: params
     #     expect(flash[:notice]).to eq("CSV column contents are different than expected.")
     #   end
 
     #   it "redirects when number of images does not match number of students" do
     #     file = fixture_file_upload('Wrong_imgs.zip', 'application/zip')
-    #     params = { file: file, course_temp: @course.course_name, section_temp: @course.section, semester_temp: @course.semester }
+    #     params = { file: file, course_temp: @course.course_name, section_temp: @course.section,
+    #                semester_temp: @course.semester }
     #     post :parse, params: params
     #     expect(flash[:notice]).to eq("Number of images does not match number of students")
     #   end

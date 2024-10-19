@@ -12,103 +12,138 @@ class UploadController < ApplicationController
     require 'zip'
     require 'csv'
     require 'securerandom'
+    require 'nokogiri'
 
-    images = []
-    csv = []
-
-    # when a zip file is uploaded, unzip it
-    Zip::File.open(params[:file]) do |zip_file|
-      # if the zip file contains a csv file, parse it
-      images_paths = []
-
-      zip_file.each do |entry|
-        Rails.logger.debug "\n\n#######ZIP entry: #{entry.name} ##############\n\n\n"
-
-        if entry.name.include? '.htm'
-          # parse html doc for correct order of pictures, csv & images zip is mismatched but html gets order correct
-          html_doc = Nokogiri::HTML(entry.get_input_stream.read)
-          images_paths = html_doc.search('img/@src').map { |s| s.text.strip }
-
-          images_paths.each do |path|
-            Rails.logger.debug "\n\n\n\n################Trying to find image with path: #{path}\n\n\n\n"
-            # error handling .display as path pushed to images_paths doesn't match entry.name,so find_entry doen't work without modyifying path
-            if path.include? '.display'
-              full_path = path.split('/', 2)
-              # puts full_path
-              # puts full_path[1]
-              images.push(zip_file.find_entry(full_path[1]))
-            else
-              Rails.logger.debug "\n\n\n\n\n\n##################### hereererer  #######################3\n\n\n\n\n\n\n"
-              images.push(zip_file.find_entry(path))
-            end
-          end
-          Rails.logger.debug "images_paths: #{images_paths.inspect}"
-          Rails.logger.debug "images: #{images.inspect}"
-
-        elsif entry.name.include? '.csv'
-          # parse
-          csv = CSV.parse(entry.get_input_stream.read, headers: true)
-          Rails.logger.info "Collected all student courses #{csv.inspect}"
-          # if the csv file contains empty rows, remove the offensive row
-          csv.delete_if { |row| row.to_hash.values.all?(&:nil?) }
-        end
-      end
-    end
-
-    # if number of rows in csv file is equal to number of images in zip file, then proceed. Otherwise, throw an error
-    if !csv.empty? && (csv.length == images.length)
-      # create course entry
-      @course = Course.find_or_create_by(course_name: params[:course_temp], teacher: current_user.email,
-                                         section: params[:section_temp], semester: params[:semester_temp])
-      StudentCourse.where(course_id: @course.id).destroy_all
-
-      csv.zip(images).each do |row, image|
-        uuid = "#{SecureRandom.uuid}-#{row['UIN'].strip}"
-
-        # if the columns are not null, then proceed
-        Rails.logger.info "Collected student #{row.inspect}"
-        if row['FIRST NAME'] && row['LAST NAME'] && row['UIN'] && row['EMAIL'] && row['CLASSIFICATION'] && row['MAJOR']
-          @student = Student.where(uin: row['UIN'].strip, teacher: current_user.email).first
-          if !@student
-            @student = Student.new(
-              firstname: row['FIRST NAME'].strip,
-              lastname: row['LAST NAME'].strip,
-              uin: row['UIN'].strip,
-              email: row['EMAIL'].strip,
-              classification: row['CLASSIFICATION'].strip,
-              major: row['MAJOR'].strip,
-              teacher: current_user.email,
-              last_practice_at: Time.now - 121.minutes,
-              curr_practice_interval: 120
-            )
-            @student.save
-          else
-            @student.update(
-              firstname: row['FIRST NAME'].strip,
-              lastname: row['LAST NAME'].strip,
-              uin: row['UIN'].strip,
-              email: row['EMAIL'].strip,
-              classification: row['CLASSIFICATION'].strip,
-              major: row['MAJOR'].strip,
-              teacher: current_user.email
-            )
-          end
-          StudentCourse.find_or_create_by(course_id: @course.id, student_id: @student.id,
-                                          final_grade: row['FINALGRADE'])
-
-          Tempfile.open([uuid]) do |tmp|
-            image.extract(tmp.path) { true }
-            @student.image.attach(io: File.open(tmp), filename: uuid)
-          end
-        else
-          redirect_to upload_index_path,
-                      notice: 'CSV column contents are different than expected. Please check the format of CSV file.'
-          return
-        end
-      end
+    names = extract_data_from_csv('Name') if params[:csv_file].present?
+    images = extract_images_from_html(names) if params[:complete_webpage_file].present?
+    if names.present? && images.present? && names.length == images.length
+      @course = create_course
+      destroy_existing_students_from_course(@course.id)
+      process_students(names, images)
       redirect_to courses_url, notice: 'Upload successful!'
     else
       redirect_to upload_index_path, notice: 'Number of images does not match number of students'
     end
+  end
+
+  private
+
+  def create_course
+    Course.find_or_create_by(
+      course_name: params[:course_temp],
+      teacher: current_user.email,
+      section: params[:section_temp],
+      semester: params[:semester_temp]
+    )
+  end
+
+  def extract_data_from_csv(column_key)
+    data = []
+    csv_file = params[:csv_file]
+    file_contents = File.read(csv_file.path)
+    cleaned_contents = file_contents.gsub("\r\n", "\n")
+
+    CSV.parse(cleaned_contents, headers: true, liberal_parsing: true) do |row|
+      cleaned_row = row.to_h
+      key = cleaned_row.keys.find { |k| k.include?(column_key) }
+      value = cleaned_row[key] if key
+      data << value unless value.nil? || value.empty?
+    end
+
+    data
+  end
+
+  def extract_images_from_html(names)
+    html_file = params[:complete_webpage_file]
+    html_doc = Nokogiri::HTML(File.read(html_file.path))
+    images = {}
+
+    names.each do |name|
+      name_div = html_doc.at_xpath("//div[contains(text(), '#{name}')]")
+      next unless name_div
+
+      previous_element = name_div.previous_element
+      if previous_element && previous_element.name == 'app-imagerosterformatter'
+        img_tag = previous_element.at_xpath('.//img')
+        images[name] = img_tag.attr('src') if img_tag
+      end
+    end
+
+    images
+  end
+
+  def get_existing_student(uin)
+    Student.where(uin:, teacher: current_user.email).first
+  end
+
+  def destroy_existing_students_from_course(course_id)
+    StudentCourse.where(course_id:).destroy_all
+  end
+
+  def process_students(names, images)
+    names.each do |name|
+      name_parts = name.strip.split(' ', 2)
+      firstname = name_parts[0]
+      lastname = name_parts[1] || ''
+      student_data = extract_row_data_for_name(name)
+
+      next unless student_data
+
+      @student = get_existing_student(student_data['UIN'])
+
+      if @student.nil?
+        @student = Student.new(
+          firstname:,
+          lastname:,
+          uin: student_data['UIN'],
+          major: student_data['MAJOR'],
+          email: student_data['EMAIL'],
+          classification: 'Students',
+          teacher: current_user.email,
+          base64_image: images[name],
+          last_practice_at: Time.now - 121.minutes,
+          curr_practice_interval: 120
+        )
+        @student.save
+      else
+        @student.update(
+          firstname:,
+          lastname:,
+          uin: student_data['UIN'],
+          major: student_data['MAJOR'],
+          email: student_data['EMAIL'],
+          classification: student_data['CLASS'],
+          teacher: current_user.email,
+          base64_image: images[name]
+        )
+      end
+
+      StudentCourse.find_or_create_by(course_id: @course.id, student_id: @student.id,
+                                      final_grade: 'A')
+    end
+  end
+
+  def extract_row_data_for_name(name)
+    csv_file = params[:csv_file]
+    file_contents = File.read(csv_file.path)
+    cleaned_contents = file_contents.gsub("\r\n", "\n")
+
+    CSV.parse(cleaned_contents, headers: true, liberal_parsing: true) do |row|
+      name_key = row.headers.find { |h| h.include?('Name') }
+
+      if row[name_key].strip == name.strip
+        email_key = row.headers.find { |h| h.include?('Email') }
+        major_key = row.headers.find { |h| h.include?('Major') }
+        uin_key = row.headers.find { |h| h.include?('UIN') }
+        class_key = row.headers.find { |h| h.include?('Class') }
+        return {
+          'EMAIL' => row[email_key].strip,
+          'MAJOR' => row[major_key].strip,
+          'UIN' => row[uin_key].strip,
+          'CLASS' => row[class_key].strip
+        }
+      end
+    end
+    nil
   end
 end

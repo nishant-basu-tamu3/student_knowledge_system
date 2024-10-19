@@ -9,10 +9,10 @@ class HomeController < ApplicationController
   def index
     @current_user = current_user
     @id = current_user.email
-    @due_students = Student.getDue(@id)
+    @due_students = Student.get_due(@id)
   end
 
-  def stripYear(var)
+  def strip_year(var)
     tmp = var.strip
     idx = tmp.rindex(' ')
     unless idx.nil?
@@ -22,27 +22,27 @@ class HomeController < ApplicationController
     tmp
   end
 
-  def getYears
+  def years
     sems = Course.where(teacher: @id)
     uniq_sems = Set.new
     sems.each do |s|
-      year = stripYear(s.semester)
+      year = strip_year(s.semester)
       uniq_sems << year
     end
     uniq_sems.length
   end
-  helper_method :getYears
+  helper_method :years
 
-  def get_num_due
+  def num_due
     @due_students.length
   end
-  helper_method :get_num_due
+  helper_method :num_due
 
-  def get_due_student_quiz
+  def due_student_quiz
     return home_path unless @due_students.length.positive?
 
     student = @due_students.sample
     quiz_students_path(student)
   end
-  helper_method :get_due_student_quiz
+  helper_method :due_student_quiz
 end

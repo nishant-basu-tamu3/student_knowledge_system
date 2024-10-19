@@ -54,13 +54,7 @@
         <% @students.each do |student| %>
           <tr class="even:bg-white odd:bg-gray-100 hover:bg-gray-200">
             <td>
-              <% if student.records[0].image.attached? %>
-                  <%= image_tag student.records[0].image.variant(:thumb), class: 'py-4 bi bi-person rounded-circle d-block mx-auto', style: 'max-width: 4rem;' %>
-              <% else %>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person rounded-circle" viewBox="0 0 16 16">
-                      <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-                  </svg>
-              <% end %>
+              <%= image_tag student.records[0].base64_image, size: "128x128" %>
             </td>
             <td>
               <%= student.records[0].lastname %>, <%= student.records[0].firstname %>
@@ -84,6 +78,7 @@
             </td>
             <td>
               <%= button_to "Show this student", student.records[0], :method => :get, class: "hover:underline hover:underline-offset-4"%>
+              <%= button_to "Delete this student", student_path(:id=>student.records[0].id, :type => "all"), method: :delete, id: "delete-student-#{student.records[0].id}", class: "hover:underline hover:underline-offset-4"%>
             </td>
           </tr>
         <% end %>
@@ -98,15 +93,7 @@
     <div id="yearbookstyle" class="mx-auto grid grid-cols-3 gap-2">
     <% @students.each do |student| %>
       <div class="text-center m-2 font-source-serif-pro bg-[#DBABAB] rounded">
-          <% if student.records[0].image.attached? %>
-              <%= image_tag student.records[0].image.variant(:thumb), class: 'bi bi-person square d-block mx-auto py-4 px-4', style: 'max-width: 12rem;' %>
-          <% else %>
-              <svg xmlns="http://www.w3.org/2000/svg" width="12rem" height="12rem" class="bi bi-person rounded-square" viewBox="0 0 16 16">
-                  <rect width="100%" height="100%" fill="gray" />
-                  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-              </svg>
-              <div></div>
-          <% end %>
+          <%= image_tag student.records[0].base64_image, size: "128x128" %>
           <%= student.records[0].lastname %>, <%= student.records[0].firstname %>
           <%= button_to "Show this student", student.records[0], :method => :get, class: "mb-2 hover:underline hover:underline-offset-4 hover:cursor-pointer"%>
       </div>

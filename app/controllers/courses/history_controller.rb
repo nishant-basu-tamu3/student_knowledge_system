@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Courses
+  # History controller class
   class HistoryController < CoursesController
     # before_action :authenticate_user!
     # before_action :authenticate_by_session

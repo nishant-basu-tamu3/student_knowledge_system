@@ -81,14 +81,14 @@ When(/I go to the courses page/) do
 end
 
 Then('I should see {string} offered in {string}') do |course_name, semester|
-  hasCourse = false
+  has_course = false
   all('tr').each do |tr|
     next unless tr.has_content?(course_name)
     next unless tr.has_content?(semester)
 
-    hasCourse = true
+    has_course = true
   end
-  expect(hasCourse).to eq(true)
+  expect(has_course).to eq(true)
 end
 
 When('I fill in {string} with {string}') do |search, query|
@@ -104,14 +104,14 @@ When('I click the first {string}') do |button|
 end
 
 Then('I should not see {string} offered in {string}') do |course_name, semester|
-  hasCourse = false
+  has_course = false
   all('tr').each do |tr|
     next unless tr.has_content?(course_name)
     next unless tr.has_content?(semester)
 
-    hasCourse = true
+    has_course = true
   end
-  expect(hasCourse).to eq(false)
+  expect(has_course).to eq(false)
 end
 
 And('I select {string} under the semester dropdown') do |semester|
