@@ -137,7 +137,7 @@ class UploadController < ApplicationController
     end
 
     final_key = cleaned_row.keys.find { |key| key.include?("Final") }
-    # here is the bug ########################
+    
     Rails.logger.info "Collected all student info #{@student.inspect}"
     Rails.logger.debug "\nTrying to find image with path: #{@student[0].inspect}\n"
     Rails.logger.debug "course id: #{@course.id}" 
@@ -145,11 +145,11 @@ class UploadController < ApplicationController
     if (@student[0].nil?)
         StudentCourse.find_or_create_by(course_id: @course.id, student_id: @student.id,
                                     final_grade: cleaned_row[final_key])
-        @student.image = images[cleaned_row[name_key]]
+        # @student.image = images[cleaned_row[name_key]]
     else
         StudentCourse.find_or_create_by(course_id: @course.id, student_id: @student[0].id,
                                         final_grade: cleaned_row[final_key])
-        @student[0].image = images[cleaned_row[name_key]]
+        # @student[0].image = images[cleaned_row[name_key]]
     end
     # TODO: Link image with student
     # @student[0].image = images[cleaned_row[name_key]]
