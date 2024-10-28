@@ -22,12 +22,10 @@ jobs:
           bundler-cache: true
 
       - name: Install dependencies
-        run: |
-          bundle install
+        run: bundle install
 
-      - name: Run linting
-        run: |
-          bundle exec rubocop
+      - name: Run RuboCop
+        run: bundle exec rubocop
 
   build:
     runs-on: ubuntu-latest
@@ -43,8 +41,7 @@ jobs:
           bundler-cache: true
 
       - name: Install dependencies
-        run: |
-          bundle install
+        run: bundle install
 
   rubocop:
     runs-on: ubuntu-latest
@@ -60,12 +57,11 @@ jobs:
           bundler-cache: true
 
       - name: Install dependencies
-        run: |
-          bundle install
+        run: bundle install
 
       - name: Run RuboCop
         run: |
-          rubocop --format json --out rubocop_output.json || true
+          bundle exec rubocop --format json --out rubocop_output.json || true
           if [[ $(jq '.summary.offense_count' rubocop_output.json) -gt 0 ]]; then
             echo "RuboCop offenses detected. Failing the job."
             exit 1
@@ -85,8 +81,7 @@ jobs:
           bundler-cache: true
 
       - name: Install dependencies
-        run: |
-          bundle install
+        run: bundle install
 
       - name: Run RSpec
         run: |
@@ -106,8 +101,7 @@ jobs:
           bundler-cache: true
 
       - name: Install dependencies
-        run: |
-          bundle install
+        run: bundle install
 
       - name: Run Cucumber
         run: |
