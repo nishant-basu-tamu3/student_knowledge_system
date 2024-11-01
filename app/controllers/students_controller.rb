@@ -267,6 +267,22 @@ class StudentsController < ApplicationController
   end
   helper_method :get_all_classification
 
+  def notes
+    @student = Student.find(params[:id])
+    render json: { notes: @student.notes }
+  end
+  
+
+  # Update notes for a student
+  def update_notes
+    @student = Student.find(params[:id])
+    if @student.update(notes: params[:notes])
+      render json: { success: true }
+    else
+      render json: { success: false }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

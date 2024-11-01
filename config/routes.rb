@@ -19,7 +19,13 @@ Rails.application.routes.draw do
 
   resources :student_courses
 
-  resources :students
+  resources :students do
+    member do
+      get :notes # Route to fetch the notes
+      post :update_notes # Route to update the notes
+    end
+  end
+
   get 'students/:id/quiz', to: 'students#quiz', as: 'quiz_students'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
