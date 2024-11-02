@@ -10,9 +10,10 @@
   <div class="w-4/5 my-2 py-2 mx-auto text-center border-2 border-dashed border-gray-400 rounded font-source-serif-pro text-[1.5rem] text-[#500000] font-bold">
     <h1>Students</h1>
   </div>
-    <table class="rounded mx-auto w-5/6 mt-2 mb-6 table table-striped table-hover text-center">
+  <table class="rounded mx-auto w-5/6 mt-2 mb-6 table table-striped table-hover text-center">
+    <thead>
       <tr>
-        <th class="font-source-serif-pro" colspan="2">
+        <th class="font-source-serif-pro" colspan="3">
           Course(s)/Semester(s): <br>
           <%= form_with(method: "get") do |f| %>
           <% selected_course = nil%>
@@ -21,19 +22,18 @@
           <% selected_semester = nil%>
           <%= f.select("selected_semester", @semesters, {:include_blank => true}, {class: "mt-2 mb-2  rounded", :onchange => "selected_semester=this.value;"}) %>
         </th>
-        <th class="font-source-serif-pro" colspan="2">
+        <th class="font-source-serif-pro" colspan="3">
           Tags:
           <% selected_tag = nil%> <br>
           <%= f.select("selected_tag", @tags, {:include_blank => true}, {class: "mt-2  mb-2 rounded", :onchange => "selected_tag=this.value;"}) %>
         </th>
       </tr>
-
       <tr class = "font-source-serif-pro">
-        <th colspan="2">
+        <th colspan="3">
           <%= f.submit "Filter Students List", class: "cursor-pointer hover:underline hover:underline-offset-4 py-1 px-3 mb-[1rem] border-2 rounded border-dotted border-[#500000]"%>
           <% end %>
         </th>
-        <th colspan="2">
+        <th colspan="3">
           <%= form_with(url: students_path, method: :get, local: true) do |f| %>
           <%= f.hidden_field :yearbook_style, value: !@yearbook_style %>
           <%= f.submit @yearbook_style ? "List View" : "Yearbook View", class: "cursor-pointer hover:underline hover:underline-offset-4 py-1 px-3 mb-[1rem] border-2 rounded border-dotted border-[#500000]" %>
@@ -41,109 +41,76 @@
         </th>
       </tr>
     
-      <tr class = "font-source-serif-pro">
-        <%= form_tag('/students', method: :get) do %>
-          <th class="font-source-serif-pro w-1/4" colspan="1">
-            Student Name: <br>
-              <%= text_field_tag :input_name, params[:input_name], placeholder: "Search by Name", class: "rounded w-3/4 mt-2 mb-3"%>
-          </th>
-          <th class="font-source-serif-pro w-1/4" colspan="1">
-            Student email: <br>
-              <%= text_field_tag :input_email, params[:input_email], placeholder: "Search by email", class: "rounded w-3/4 mt-2 mb-3" %>
-          </th>
-          <th class="font-source-serif-pro w-1/4" colspan="1">
-            Student UIN: <br>
-              <%= text_field_tag :input_UIN, params[:input_UIN], placeholder: "Search by UIN", class: "rounded w-3/4 mt-2 mb-3" %>
-          </th>
-          <th class="w-1/4" colspan="1">
-            <%= submit_tag 'Search Student', :name => nil, class: "cursor-pointer hover:underline hover:underline-offset-4 py-2 px-3 border-2 rounded border-dotted border-[#500000] center w-3/4 mt-5" %>
-          </th>
-        <% end %>
+    <% if !@yearbook_style %>
+      <tr class="bg-slate-400 font-medium font-source-serif-pro">
+        <th class="rounded-tl-lg px-auto py-2"> Image </th>
+        <th class="border-l-[0.05rem] border-r-[0.05rem] px-auto py-2"> Name </th>
+        <th class="border-l-[0.05rem] border-r-[0.05rem] px-auto py-2"> Email </th>
+        <th class="border-l-[0.05rem] border-r-[0.05rem] px-auto py-2"> Course(s)/Semester(s): </th>
+        <th class="border-l-[0.05rem] border-r-[0.05rem] px-auto py-2"> Tags </th>
+        <th class="rounded-tr-lg px-auto py-2"> View Student Profile: </th>
       </tr>
-    </table>
+    <%end%>
+    </thead>
 
-    <table>
-      <thead>
-        <% if !@yearbook_style and !@no_students_found%>
-          <tr class="bg-slate-400 font-medium font-source-serif-pro">
-            <th class="rounded-tl-lg px-auto py-2"> Image </th>
-            <th class="border-l-[0.05rem] border-r-[0.05rem] px-auto py-2"> Name </th>
-            <th class="border-l-[0.05rem] border-r-[0.05rem] px-auto py-2"> Email </th>
-            <th class="border-l-[0.05rem] border-r-[0.05rem] px-auto py-2"> Course(s)/Semester(s): </th>
-            <th class="border-l-[0.05rem] border-r-[0.05rem] px-auto py-2"> Tags </th>
-            <th class="rounded-tr-lg px-auto py-2"> View Student Profile: </th>
+    <tbody class="rounded font-source-serif-pro border"id="students">
+    <% if !@yearbook_style %>
+      <div>
+        <% @students.each do |student| %>
+          <tr class="even:bg-white odd:bg-gray-100 hover:bg-gray-200">
+            <td>
+              <% if student.records[0].base64_image.present? %>
+                <%= image_tag student.records[0].base64_image, size: "128x128" %>
+              <% else %>
+                <p>No image available</p>
+              <% end %>
+            </td>
+            <td>
+              <%= student.records[0].lastname %> <%= student.records[0].firstname %>
+            </td>
+            <td>
+              <%= student.records[0].email %>
+            </td>
+            <td>
+              <%= student.course_semester.to_a.join(", ") %>
+            </td>
+            <td>
+              <% if StudentsTag.where(student_id: student.records[0].id).length == 0 %>
+                  None
+              <% else %>
+                  <% tag_display_array = [] %>
+                  <% StudentsTag.where(student_id: student.records[0].id).each do |association| %>
+                      <% tag_display_array.append(Tag.where(id: association.tag_id)[0].tag_name) %>
+                  <% end %>
+                  <%= tag_display_array.join(", ") %>
+              <% end %>
+            </td>
+            <td>
+              <%= button_to "Show this student", student.records[0], :method => :get, class: "hover:underline hover:underline-offset-4"%>
+              <%= button_to "Delete this student", student_path(:id=>student.records[0].id, :type => "all"), method: :delete, id: "delete-student-#{student.records[0].id}", class: "hover:underline hover:underline-offset-4"%>
+              <%= link_to "View/Edit Notes", '#', class: "hover:underline hover:underline-offset-4", onclick: "fetchNotes(#{student.records[0].id}); return false;" %>
+            </td>
           </tr>
-        <%end%>
-      </thead>
-      <% if @no_students_found %>
-        <p class="alert" style="font-size: 1.5em; font-weight: bold; text-align: center; padding: 20px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 8px; max-width: 80%; margin: 20px auto;">No students found that match the input.</p>
-      <% end %>
-      <tbody class="rounded font-source-serif-pro border"id="students">
-      <% if !@yearbook_style %>
-        <div>
-          <% @students.each do |student| %>
-            <tr class="even:bg-white odd:bg-gray-100 hover:bg-gray-200">
-              <td>
-                <% if student.records[0].base64_image.present? %>
-                  <%= image_tag student.records[0].base64_image, size: "128x128" %>
-                <% else %>
-                  <p>No image available</p>
-                <% end %>
-              </td>
-              <td>
-                <%= student.records[0].lastname %>, <%= student.records[0].firstname %>
-              </td>
-              <td>
-                <%= student.records[0].email %>
-              </td>
-              <td>
-                <%= student.course_semester.to_a.join(", ") %>
-              </td>
-              <td>
-                <% if StudentsTag.where(student_id: student.records[0].id).length == 0 %>
-                    None
-                <% else %>
-                    <% tag_display_array = [] %>
-                    <% StudentsTag.where(student_id: student.records[0].id).each do |association| %>
-                        <% tag_display_array.append(Tag.where(id: association.tag_id)[0].tag_name) %>
-                    <% end %>
-                    <%= tag_display_array.join(", ") %>
-                <% end %>
-              </td>
-              <td>
-                <%= button_to "Show this student", student.records[0], :method => :get, class: "hover:underline hover:underline-offset-4"%>
-                <%= button_to "Delete this student", student_path(:id=>student.records[0].id, :type => "all"), method: :delete, id: "delete-student-#{student.records[0].id}", class: "hover:underline hover:underline-offset-4"%>
-              </td>
-            </tr>
-          <% end %>
-        </div>
-      <% end %>
-    </table>
+        <% end %>
+      </div>
+    <% end %>
+  </table>
 
 
 
     <% if @yearbook_style %>
-<<<<<<< HEAD
-      <div id="yearbookstyle" class="mx-auto grid grid-cols-3 gap-2">
-        <% @students.each do |student| %>
-          <div class="text-center m-2 font-source-serif-pro bg-[#DBABAB] rounded">
-              <%= image_tag student.records[0].base64_image, size: "128x128" %>
-              <%= student.records[0].lastname %>, <%= student.records[0].firstname %>
-              <%= button_to "Show this student", student.records[0], :method => :get, class: "mb-2 hover:underline hover:underline-offset-4 hover:cursor-pointer"%>
-          </div>
-        <% end %>
-=======
 
     <div id="yearbookstyle" class="mx-auto grid grid-cols-3 gap-2">
     <% @students.each do |student| %>
       <div class="text-center m-2 font-source-serif-pro bg-[#DBABAB] rounded">
           <%= image_tag student.records[0].base64_image, size: "128x128" %>
           <%= student.records[0].lastname %>, <%= student.records[0].firstname %>
->>>>>>> d0c127b27586e6b347113afb9ab0e352dde2267f
       </div>
-      <br>
     <% end %>
-  </div>
+    </div>
+    <br>
+    <% end %>
+</div>
 
 <div id="notesModal" class="modal" style="display: none;">
   <div class="modal-content">
