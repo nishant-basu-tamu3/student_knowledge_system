@@ -278,8 +278,6 @@ class StudentsController < ApplicationController
     @student = Student.find(params[:id])
     if @student.update(notes: params[:notes])
       render json: { success: true }
-    else
-      render json: { success: false }, status: :unprocessable_entity
     end
   end
 

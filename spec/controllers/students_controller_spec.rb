@@ -16,7 +16,7 @@ RSpec.describe StudentsController, type: :controller do
                                semester: 'Spring 2024')
 
       @student = Student.create(firstname: 'Zebulun', lastname: 'Oliphant', uin: '734826482', email: 'zeb@tamu.edu',
-                                classification: 'U2', major: 'CPSC', teacher: 'student@gmail.com')
+                                classification: 'U2', major: 'CPSC', teacher: 'student@gmail.com', notes: 'Good Student!')
     end
 
     it 'calls index successfully' do
@@ -65,6 +65,28 @@ RSpec.describe StudentsController, type: :controller do
 
     it 'deletes successfully' do
       get :show, params: { id: @student.id }
+    end
+
+    it 'retrieves notes successfully' do
+      get :notes, params: { id: @student.id }
+      expect(response).to have_http_status(:success)
+      expect(JSON.parse(response.body)).to eq({ 'notes' => @student.notes })
+    end
+
+    it 'updates notes successfully' do
+      new_notes = 'Updated Notes!'
+      patch :update_notes, params: { id: @student.id, notes: new_notes }
+      expect(response).to have_http_status(:success)
+      expect(JSON.parse(response.body)).to eq({ 'success' => true })
+      @student.reload
+      expect(@student.notes).to eq(new_notes)
+    end
+
+    it 'handles notes update failure' do
+      # Assuming your Student model validates presence of notes
+      @student.update(notes: nil) # or whatever validation you have
+      patch :update_notes, params: { id: @student.id, notes: nil }
+      expect(response).to have_http_status(:success)
     end
   end
 
