@@ -113,6 +113,7 @@
               <td>
                 <%= button_to "Show this student", student.records[0], :method => :get, class: "hover:underline hover:underline-offset-4"%>
                 <%= button_to "Delete this student", student_path(:id=>student.records[0].id, :type => "all"), method: :delete, id: "delete-student-#{student.records[0].id}", class: "hover:underline hover:underline-offset-4"%>
+                <%= link_to "View/Edit Notes", '#', class: "hover:underline hover:underline-offset-4", onclick: "fetchNotes(#{student.records[0].id}); return false;" %>
               </td>
             </tr>
           <% end %>
@@ -126,9 +127,12 @@
       <div id="yearbookstyle" class="mx-auto grid grid-cols-3 gap-2">
         <% @students.each do |student| %>
           <div class="text-center m-2 font-source-serif-pro bg-[#DBABAB] rounded">
-              <%= image_tag student.records[0].base64_image, size: "128x128" %>
+          <div style="display: flex; justify-content: center;">
+            <%= image_tag student.records[0].base64_image, size: "128x128" %>
+          </div>   
               <%= student.records[0].lastname %>, <%= student.records[0].firstname %>
               <%= button_to "Show this student", student.records[0], :method => :get, class: "mb-2 hover:underline hover:underline-offset-4 hover:cursor-pointer"%>
+              <%= link_to "View/Edit Notes", '#', class: "hover:underline hover:underline-offset-4", onclick: "fetchNotes(#{student.records[0].id}); return false;" %>
           </div>
         <% end %>
       </div>
