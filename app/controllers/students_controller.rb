@@ -209,23 +209,24 @@ class StudentsController < ApplicationController
   def update
     @student = Student.find(params[:id])
 
+    # Clear current tags for the student
     current_tags = StudentsTag.where(student_id: params[:id], teacher: current_user.email)
     current_tags.delete_all
     tags_success = true
-    # Remove any empty strings in the returned array
-    unless params[:student][:tags].nil?
-      tag_ids = params[:student][:tags].reject!(&:empty?)
-      tag_ids = tag_ids.map! { |tag_name| Tag.where(tag_name:)[0].id }
-      tag_ids.each do |element|
-        unless StudentsTag.create(tag_id: element, student_id: params[:id], teacher: current_user.email)
-          tags_success = false
-        end
-      end
-    end
 
-    if !params[:student][:create_tag].nil? && params[:student][:create_tag].strip != ''
-      new_tag = Tag.find_or_create_by!(tag_name: params[:student][:create_tag], teacher: current_user.email)
+    # Check if a new tag was entered
+    if params[:student][:new_tag].present?
+      # Create a new tag and associate it with the student
+      new_tag = Tag.find_or_create_by!(tag_name: params[:student][:new_tag], teacher: current_user.email)
       StudentsTag.create!(tag_id: new_tag.id, student_id: params[:id], teacher: current_user.email)
+    elsif params[:student][:existing_tag].present?
+      # Use the selected existing tag
+      existing_tag_id = Tag.find_by(tag_name: params[:student][:existing_tag], teacher: current_user.email)&.id
+      if existing_tag_id
+        StudentsTag.create!(tag_id: existing_tag_id, student_id: params[:id], teacher: current_user.email)
+      else
+        tags_success = false
+      end
     end
 
     respond_to do |format|
