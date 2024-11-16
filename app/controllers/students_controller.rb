@@ -206,7 +206,6 @@ class StudentsController < ApplicationController
   end
 
   # PATCH/PUT /students/1 or /students/1.json
-  # PATCH/PUT /students/1 or /students/1.json
   def update
     @student = Student.find(params[:id])
 
