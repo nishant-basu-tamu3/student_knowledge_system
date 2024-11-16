@@ -186,3 +186,10 @@ Scenario: Delete a student
     And I go to the students page
     And I click the delete button for student "New"
     Then I should see "New student"
+
+Scenario: Filter Student based on Course
+    When I sign in as "team_cluck_admin@gmail.com"
+    And I go to the students page
+    And I select "Spring 2023" under the semester dropdown
+    And I click "Filter Students List"
+    Then I should see "Spring 2023"
