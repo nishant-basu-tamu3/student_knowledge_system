@@ -25,6 +25,18 @@ Given the following students exist:
 | Joe       | Mama      | 720401677 | howisjoe@tamu.edu     | U1             | ENGR  | team_cluck_admin@gmail.com | 2023-01-25 19:11:11.111111    | 120                    |
 | Sheev     | Palpatine | 983650274 | senate@tamu.edu       | U2             | CPSC  | team_cluck_admin@gmail.com | 2023-01-25 19:11:11.111111    | 119                    |
 
+Scenario: If course doesnt exist show "Given Course not found." ( HTML Response)
+    Given students are enrolled in their respective courses
+    When I sign in as "team_cluck_admin@gmail.com"
+    And I visit a course page with an invalid course ID in HTML format
+    Then I should be redirected to the courses page with a "Given course not found." notice
+
+Scenario: If course doesnt exist show JSON Response - E 204
+    Given students are enrolled in their respective courses
+    When I sign in as "team_cluck_admin@gmail.com"
+    And I visit a course page with an invalid course ID in JSON format
+    Then I should receive a "204 No Content" JSON response
+
 Scenario: All courses viewable
     Given students are enrolled in their respective courses
     When I sign in as "team_cluck_admin@gmail.com"

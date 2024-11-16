@@ -130,3 +130,22 @@ And('I select {string} under the semester dropdown') do |semester|
   # Select the option from the dropdown menu
   select semester, from: 'selected_semester'
 end
+
+When('I visit a course page with an invalid course ID in HTML format') do
+  visit "/courses/9999" # Assuming 9999 is an invalid ID
+end
+
+When('I visit a course page with an invalid course ID in JSON format') do
+  page.driver.header 'Accept', 'application/json'
+  visit "/courses/9999"
+end
+
+Then('I should be redirected to the courses page with a "Given course not found." notice') do
+  expect(page).to have_current_path(courses_path)
+  expect(page).to have_content('Given course not found.')
+end
+
+Then('I should receive a "204 No Content" JSON response') do
+  expect(page.status_code).to eq(204)
+  expect(page.body).to be_empty
+end
