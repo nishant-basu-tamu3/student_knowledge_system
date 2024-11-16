@@ -54,16 +54,16 @@ Scenario: Search by tag
     And I go to the students page
     And I select "Fall 2024" under semester
     Then I submit the filter form
-    Then I should see "Susheel"
+    Then I should see "Prakhar"
     When I click show this student
     And I click "Edit this student"
-    When I fill in student "create_tag" with "test"
+    When I fill in student "new_tag" with "test"
     And I click "Update Student"
     Then I should see "test"
     When I go to the students page
     And I select "test" under tag
     Then I submit the filter form
-    Then I should see "Susheel"
+    Then I should see "Prakhar"
 
 Scenario: Search by name
     When I sign in as "team_cluck_admin@gmail.com"
