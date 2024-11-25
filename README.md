@@ -16,6 +16,7 @@ Code Climate Report : https://codeclimate.com/github/nishant-basu-tamu3/student_
   * [Prakhar Suryavansh](mailto:ps41@tamu.edu)
 
 ## Getting Started 
+* Follow these steps for setting up the working environment locally on your system:
 * be in your dev machine, e.g. a fresh VPS or container (recommend Ubuntu 20+ with >=2 GB RAM)
 * fork this repository: [fork it](https://github.com/philipritchey/student_knowledge_system/fork)
 * clone your fork: `git clone git@github.com:YOU/student_knowledge_system.git`
@@ -46,6 +47,7 @@ Code Climate Report : https://codeclimate.com/github/nishant-basu-tamu3/student_
 * "heroku info -s" in termninal to get app url
 
 ## AWS - for storage
+* If using AWS s3 bucket then follow the following steps:
 * [create an s3 bucket](https://s3.console.aws.amazon.com/s3/buckets)
   * create a unique email id on gmail for using it for oauth and aws.
   * Go to aws and create an account with this email id as root user. (Requires Debit/Credit Card)
