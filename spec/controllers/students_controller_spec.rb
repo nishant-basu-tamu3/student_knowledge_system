@@ -153,7 +153,7 @@ RSpec.describe StudentsController, type: :controller do
     it 'redirects to quiz filters path if no due students match filters' do
       allow(Student).to receive(:get_due).with(@user.email).and_return([])
       get :quiz
-      expect(flash[:alert]).to eq('No students found for the selected filters.')
+      expect(flash[:notice]).to eq('All students have been quizzed. Great job! Try again later.')
       expect(response).to redirect_to(quiz_filters_path)
     end
 

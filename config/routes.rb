@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  get 'reset_quiz_cohort', to: 'home#reset_quiz_cohort'
   post 'upload/index', to: 'upload#parse'
   get 'upload/index', to: 'upload#index'
 

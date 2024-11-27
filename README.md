@@ -30,8 +30,8 @@ Code Climate Report : https://codeclimate.com/github/nishant-basu-tamu3/student_
 * install dependencies: `bundle install`
 * setup the database: `rails db:migrate`
 * prepare the test database: `rails db:test:prepare`
+* run cucumber tests: `rails cucumber` (Run this first for correct coverage)
 * run rspec tests: `rails spec`
-* run cucumber tests: `rails cucumber`
 * assert that all tests are passing.  if they are not, find out which are failing and fix them and/or contact the previous team for help in fixing them.  possibly, the failing tests are themselves invalid and can be safely skipped?
 * install heroku cli: `curl https://cli-assets.heroku.com/install-ubuntu.sh | sh`
 * login to heroku: `heroku login -i`

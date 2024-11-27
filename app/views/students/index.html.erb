@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.15/tailwind.min.css" integrity="sha512-SwsmRz5W8gC1tBUOZtJvLx+3qX0CUfn+vtWygoGckf7l3asqJ3E7ZQ26IplujBxRfzJX9F7fY+50UuOb7KQGqw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+<% if Course.where(teacher: current_user.email).exists? %>
+<div>
 <% if flash[:notice] %>
   <div class="alert alert-info">
     <%= flash[:notice] %> <!-- Displays the flash message -->
@@ -148,6 +149,9 @@
   </div>
 </div>
 
+
+
+
 <script>
   let currentStudentId; // Global variable to store the student ID
 
@@ -233,3 +237,10 @@
     <span><%= button_to "New student", new_student_path, :method => :get %></span>
   </div>
 </footer>
+</div>
+<% else %>
+  <div class="font-source-serif-pro px-6 py-4 rounded drop-shadow bg-white text-center">
+    <p class="text-lg text-red-600">Cannot add students without a course. Please add a course first by clicking on the "Courses" tab above.</p>
+    <%= link_to "Add a Course", new_course_path, class: "mt-4 inline-block bg-[#500000] text-white py-2 px-4 rounded hover:bg-[#3d0000]" %>
+  </div>
+<% end %>

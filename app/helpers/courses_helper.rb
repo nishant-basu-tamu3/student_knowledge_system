@@ -2,5 +2,4 @@
 
 # Course Helper
 module CoursesHelper
-
 end

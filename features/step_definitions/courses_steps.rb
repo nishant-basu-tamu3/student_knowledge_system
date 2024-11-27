@@ -132,12 +132,12 @@ And('I select {string} under the semester dropdown') do |semester|
 end
 
 When('I visit a course page with an invalid course ID in HTML format') do
-  visit "/courses/9999" # Assuming 9999 is an invalid ID
+  visit '/courses/9999' # Assuming 9999 is an invalid ID
 end
 
 When('I visit a course page with an invalid course ID in JSON format') do
   page.driver.header 'Accept', 'application/json'
-  visit "/courses/9999"
+  visit '/courses/9999'
 end
 
 Then('I should be redirected to the courses page with a "Given course not found." notice') do

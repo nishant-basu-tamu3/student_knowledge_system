@@ -205,6 +205,12 @@ class StudentsController < ApplicationController
     end
   end
 
+  def check_courses_exist
+    return if Course.where(teacher: current_user.email).exists?
+
+    redirect_to courses_path, alert: 'You need to add a course before adding students.'
+  end
+
   # PATCH/PUT /students/1 or /students/1.json
   def update
     @student = Student.find(params[:id])
@@ -282,7 +288,11 @@ class StudentsController < ApplicationController
     @due_students = @due_students.select { |student| @students.include?(student) }
 
     if @due_students.empty?
-      flash[:alert] = 'No students found for the selected filters.'
+      if @students.count == Student.where(teacher: current_user.email).count
+        flash[:notice] = 'All students have been quizzed. Great job! Try again later.'
+      else
+        flash[:alert] = 'No students are due for quizzing with the current filters. Try adjusting your filters.'
+      end
       redirect_to quiz_filters_path and return
     end
 

@@ -6,13 +6,20 @@
   </div>
   <div class="container">
     <div class="grid">
-      <div  class="">
-        <h2 class="text-[1.5rem] font-source-serif-pro mt-2">Welcome Back!</h2>
-        <% if num_due() > 0 %>
-        <p class="text-[1.15rem] font-source-serif-pro mt-2 mb-6"><b>Students are due for practice!</b></p>
-        <a  class="font-fira-sans px-4 py-3 bg-[#eacece] hover:bg-[#DBABAB] drop-shadow rounded-xl border-2 border-[#e5c2c2]" href= <%= quiz_filters_path %> >Practice now!</a>
-        <% end %>
-      </div>
+<div class="">
+  <h2 class="text-[1.5rem] font-source-serif-pro mt-2">Welcome Back!</h2>
+  <% case students_status %>
+  <% when :students_due %>
+    <p class="text-[1.15rem] font-source-serif-pro mt-2 mb-6"><b>Students are due for practice!</b></p>
+    <a class="font-fira-sans px-4 py-3 bg-[#eacece] hover:bg-[#DBABAB] drop-shadow rounded-xl border-2 border-[#e5c2c2]" href="<%= quiz_filters_path %>">Practice now!</a>
+  <% when :all_quizzed %>
+    <p class="text-[1.15rem] font-source-serif-pro mt-2 mb-6"><b>All students are quizzed. Do you want to reset your quiz cohort?</b></p>
+    <a class="font-fira-sans px-4 py-3 bg-[#eacece] hover:bg-[#DBABAB] drop-shadow rounded-xl border-2 border-[#e5c2c2]" href="<%= reset_quiz_cohort_path %>">Reset Quiz Cohort</a>
+  <% when :no_students %>
+    <p class="text-[1.15rem] font-source-serif-pro mt-2 mb-6"><b>No students found. Please upload a course with students.</b></p>
+  <% end %>
+</div>
+
 
     </div>
   </div>
