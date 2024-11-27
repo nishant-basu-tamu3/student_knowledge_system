@@ -268,7 +268,7 @@ RSpec.describe CoursesController, type: :controller do
 
     it 'displays a success notice' do
       delete :destroy, params: { id: @course1.id }
-      expect(flash[:notice]).to eq('Course and its info were successfully deleted.')
+      expect(flash[:notice]).to eq('Course and its info were successfully deleted, along with associated students and quiz data.')
     end
   end
 

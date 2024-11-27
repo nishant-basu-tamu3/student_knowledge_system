@@ -173,12 +173,25 @@ class CoursesController < ApplicationController
 
   # DELETE /courses/1 or /courses/1.json
   def destroy
-    @student_records = StudentCourse.where(course_id: params[:id])
-    @student_records.destroy_all
-    @course.delete
+    ActiveRecord::Base.transaction do
+      @student_records = StudentCourse.where(course_id: params[:id])
+      student_ids = @student_records.pluck(:student_id)
+
+      @student_records.destroy_all
+
+      Student.where(id: student_ids).where.not(id: StudentCourse.select(:student_id)).destroy_all
+
+      QuizSession.where(user_id: student_ids).destroy_all
+
+      @course = Course.find(params[:id])
+      @course.destroy
+    end
 
     respond_to do |format|
-      format.html { redirect_to courses_url, notice: 'Course and its info were successfully deleted.' }
+      format.html do
+        redirect_to courses_url,
+                    notice: 'Course and its info were successfully deleted, along with associated students and quiz data.'
+      end
       format.json { head :no_content }
     end
   end
