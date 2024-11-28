@@ -17,6 +17,9 @@ node_modules/*
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+/courses
+/app/assets/builds/tailwind.css
+/db/schema.rb
 /config/master.key
 
 /app/assets/builds/*
