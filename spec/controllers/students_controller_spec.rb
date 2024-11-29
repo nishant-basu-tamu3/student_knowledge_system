@@ -279,16 +279,42 @@ RSpec.describe StudentsController, type: :controller do
         major: 'CPSC',
         teacher: 'teacher@gmail.com'
       )
+      @student3 = Student.create(
+        firstname: 'Jack',
+        lastname: 'Jerry',
+        uin: '987654321',
+        email: 'bob@example.com',
+        classification: 'U1',
+        major: 'CECN',
+        teacher: 'teacher@gmail.com'
+      )
 
       StudentCourse.create(student_id: @student1.id, course_id: @course1.id) # Alice enrolled in CSCE 411
       # Uncomment the next line if you want to enroll Bob in a different course
-      # StudentCourse.create(student_id: @student2.id, course_id: @course2.id) # Bob enrolled in CSCE 412
+      StudentCourse.create(student_id: @student2.id, course_id: @course2.id) # Bob enrolled in CSCE 412
+      StudentCourse.create(student_id: @student3.id, course_id: @course2.id) # Bob enrolled in CSCE 412
 
       @params = { selected_course: @course1.course_name, selected_semester: @course1.semester }
       @params_name = { input_name: @student1.firstname }
       @params_email = { input_email: @student2.email }
       @params_uin = { input_UIN: @student2.uin }
       @params_wrong = { input_UIN: '111111111' }
+      @params_search = {search: @student1.email}
+    end
+
+    it 'display student with search' do
+      get :index, params: @params_search
+      expect(assigns(:students).first.records).to include(@student1) # Alice should be included
+    end
+
+    it 'display student with search' do
+      get :index, params: {search: ' '}
+      expect(assigns(:students)).not_to include(@student1)  # Alice should not be included
+    end
+
+    it 'displays only students enrolled in the selected course and semester' do
+      get :index, params: @params_email
+      expect(assigns(:students).first.records).to include(@student3) # Alice should be included
     end
 
     it 'displays only students enrolled in the selected course and semester' do
