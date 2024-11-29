@@ -4,14 +4,15 @@
 APP_PATH = File.expand_path('../config/application', __dir__)
 require_relative '../config/boot'
 require 'rails/commands'
-if ENV['RAILS_ENV'] == 'test'
-  require 'simplecov'
-  SimpleCov.start 'rails' do
-    add_filter(/application/)
-    add_filter(/user/)
-    # add_filter do |source_file|
-    #     source_file.lines.count < 4
-    # end
-  end
-  puts 'required simplecov'
-end
+# if ENV['RAILS_ENV'] == 'test'
+#   require 'simplecov'
+#   SimpleCov.start 'rails' do
+#     add_filter(/application/)
+#     add_filter(/user/)
+#     # add_filter do |source_file|
+#     #     source_file.lines.count < 4
+#     # end
+#   end
+#   puts 'above is the total coverage'
+#   puts 'required simplecov'
+# end

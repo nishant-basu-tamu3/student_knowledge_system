@@ -26,6 +26,8 @@ RSpec.describe CoursesController, type: :controller do
                                classification: 'U1', major: 'CPSC', teacher: 'student@gmail.com')
     @student5 = Student.create(firstname: 'Sheev', lastname: 'Palpatine', uin: '983650274', email: 'senate@tamu.edu',
                                classification: 'U1', major: 'CPSC', teacher: 'student@gmail.com')
+    @student6 = Student.create(firstname: 'Jack', lastname: 'Zaxk', uin: '983650274', email: 'senate@tamu.edu',
+                               classification: 'U1', major: 'CPSC', teacher: 'student@gmail.com')
 
     StudentCourse.create(
       course_id: Course.find_by(course_name: 'CSCE 411', semester: 'Fall 2022',
@@ -42,6 +44,14 @@ RSpec.describe CoursesController, type: :controller do
     StudentCourse.create(
       course_id: Course.find_by(course_name: 'CSCE 411', semester: 'Spring 2023',
                                 section: '501').id, student_id: Student.find_by(uin: '720401677').id, final_grade: ''
+    )
+    StudentCourse.create(
+      course_id: Course.find_by(course_name: 'CSCE 411', semester: 'Spring 2023',
+                                section: '501').id, student_id: Student.find_by(uin: '983650274').id, final_grade: ''
+    )
+    StudentCourse.create(
+      course_id: Course.find_by(course_name: 'CSCE 411', semester: 'Spring 2023',
+                                section: '501').id, student_id: Student.find_by(firstname: 'Jack').id, final_grade: ''
     )
     StudentCourse.create(
       course_id: Course.find_by(course_name: 'CSCE 412', semester: 'Spring 2023',
@@ -131,6 +141,8 @@ RSpec.describe CoursesController, type: :controller do
       get :show, params: { id: @course1.id }
       expect(assigns(:all_course_ids)).to include(@course1.id)
       expect(assigns(:student_ids)).to include(@student1.id)
+      expect(assigns(:student_ids)).to include(@student5.id)
+      expect(assigns(:student_ids)).to include(@student6.id)
       expect(assigns(:tags)).to be_an_instance_of(Set)
       expect(assigns(:semesters)).to be_an_instance_of(Set)
       expect(assigns(:sections)).to be_an_instance_of(Set)
@@ -147,7 +159,7 @@ RSpec.describe CoursesController, type: :controller do
       expect(assigns(:student_records).first.records.first.lastname).to eq('Biel')
 
       get :show, params: { id: @course1.id, sortOrder: 'Reverse Alphabetical' }
-      expect(assigns(:student_records).first.records.first.lastname).to eq('Oliphant')
+      expect(assigns(:student_records).first.records.first.lastname).to eq('Palpatine')
     end
 
     it 'initializes new student entry when student is not in @student_records_hash' do
@@ -186,7 +198,7 @@ RSpec.describe CoursesController, type: :controller do
       expect(assigns(:student_records).first.records.first.lastname).to eq('Biel')
 
       get :show, params: { id: @course1.id, sortOrder: 'Reverse Alphabetical' }
-      expect(assigns(:student_records).first.records.first.lastname).to eq('Oliphant')
+      expect(assigns(:student_records).first.records.first.lastname).to eq('Palpatine')
     end
   end
 
@@ -241,10 +253,10 @@ RSpec.describe CoursesController, type: :controller do
         end
       end
 
-      # it "renders the edit template" do
-      # patch :update, params: { id: @course3.id, course: { course_name: "CSCE 431" } }
-      # expect(response).to render_template :edit
-      # end
+        # it "renders the edit template" do
+        #   patch :update, params: { id: @course3.id, course: { section: '' } }
+        #   expect(response).to render_template :edit
+        # end
     end
   end
 
