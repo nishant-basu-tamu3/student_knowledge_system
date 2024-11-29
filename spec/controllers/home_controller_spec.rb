@@ -6,6 +6,8 @@ RSpec.describe HomeController, type: :controller do
   before :each do
     @user = User.create(email: 'student@gmail.com', firstname: 'Alice', lastname: 'Bob',
                         department: 'computer science', confirmed_at: Time.now)
+    
+
 
     @course1 = Course.create(course_name: 'CSCE 411', teacher: 'student@gmail.com', section: '501',
                              semester: 'Spring 2023')
@@ -74,6 +76,19 @@ RSpec.describe HomeController, type: :controller do
       it "returns the number of unique years in the teacher's courses" do
         get :index
         expect(controller.years).to eq(2)
+      end
+    end
+
+    describe '#reset_quiz_cohort' do
+      before do
+        allow(controller).to receive(:current_user).and_return(@user)
+      end
+
+      it 'resets all students under the current user' do
+        post :reset_quiz_cohort
+  
+        expect(flash[:notice]).to eq('Quiz cohort has been reset. You can now practice with all students.')
+        expect(response).to redirect_to(home_path)
       end
     end
   end
